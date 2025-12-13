@@ -12,6 +12,25 @@
 <body>
 
     <div class="left-sidebar">
+        <div class="streak-box stats-box">
+            <h4>過去問平均 (％)</h4>
+            <div class="stat-row">
+                <span>今週:</span>
+                <span id="weeklyAverage" class="stat-value">--</span>
+                <span class="unit">%</span>
+            </div>
+            
+            <div class="history-area">
+                <div id="weeklyHistory" class="history-list">
+                    </div>
+            </div>
+            <div class="stat-row small-stat">
+                <span>先週比:</span>
+                <span id="weeklyDiff" class="stat-diff">--</span>
+            </div>
+            <button class="record-btn" onclick="openScoreModal()">✏️ 記録</button>
+        </div>
+
         <div class="streak-box">
             <h4>連続達成</h4>
             <div class="streak-count-area"><span id="streak-count">0</span> 日</div>
@@ -25,11 +44,11 @@
         <div class="inventory-box item-display">
             <h4 onclick="toggleInventory(this)">所持素材 <span class="toggle-icon">▼</span></h4>
             <div class="inventory-content">
-                <div class="item-row"><span><img src="ペンキ.png" alt="ペンキ" class="item-icon">ペンキ:</span> <span id="count-belt">0</span></div>
-                <div class="item-row"><span><img src="筆.png" alt="筆" class="item-icon">筆:</span> <span id="count-body">0</span></div>
-                <div class="item-row"><span><img src="布.png" alt="布" class="item-icon">布:</span> <span id="count-bezel">0</span></div>
-                <div class="item-row"><span><img src="キャンバス.png" alt="キャンバス" class="item-icon">キャンバス:</span> <span id="count-chip">0</span></div>
-                <div class="item-row"><span><img src="設計図.png" alt="設計図" class="item-icon">設計図:</span> <span id="count-light">0</span></div>
+                <div class="item-row"><span><img src="画像/ペンキ.png" alt="ペンキ" class="item-icon">ペンキ:</span> <span id="count-belt">0</span></div>
+                <div class="item-row"><span><img src="画像/筆.png" alt="筆" class="item-icon">筆:</span> <span id="count-body">0</span></div>
+                <div class="item-row"><span><img src="画像/布.png" alt="布" class="item-icon">布:</span> <span id="count-bezel">0</span></div>
+                <div class="item-row"><span><img src="画像/キャンバス.png" alt="キャンバス" class="item-icon">キャンバス:</span> <span id="count-chip">0</span></div>
+                <div class="item-row"><span><img src="画像/設計図.png" alt="設計図" class="item-icon">設計図:</span> <span id="count-light">0</span></div>
             </div>
         </div>
     </div>
@@ -127,7 +146,7 @@
             <button onclick="changeMonth(1)">次の月</button>
         </div>
         <table class="calendar-table">
-            <thead><tr><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
+            <thead><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr></thead>
             <tbody id="calendarTableBody"></tbody>
         </table>
         <div id="selectedDateInfo" class="selected-date-info is-hidden">
@@ -165,6 +184,7 @@
     </div>
 
     <div id="toastContainer" class="toast-container"></div>
+    
     <div id="actionModal" class="modal-overlay is-hidden">
         <div class="modal-content">
             <h4 id="modalTitle" class="modal-title">確認</h4>
@@ -175,6 +195,7 @@
             </div>
         </div>
     </div>
+    
     <div id="examModal" class="modal-overlay is-hidden">
         <div class="modal-content">
             <h4 class="modal-title">試験日設定</h4>
@@ -183,6 +204,21 @@
             <div class="modal-buttons">
                 <button class="modal-btn save-exam" onclick="saveExamDate()">保存</button>
                 <button class="modal-btn cancel" onclick="closeExamModal()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreModal" class="modal-overlay is-hidden">
+        <div class="modal-content">
+            <h4 class="modal-title">過去問点数記録</h4>
+            <p class="exam-modal-desc">正答率(%)を入力してください</p>
+            <div class="input-group" style="margin-bottom:15px;">
+                <input type="number" id="scoreInput" placeholder="例: 65" min="0" max="100">
+                <span style="align-self:center; font-weight:bold;">%</span>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn save-exam" onclick="saveScore()">記録する</button>
+                <button class="modal-btn cancel" onclick="closeScoreModal()">閉じる</button>
             </div>
         </div>
     </div>
