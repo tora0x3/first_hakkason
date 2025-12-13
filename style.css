@@ -141,23 +141,6 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     display: flex; flex-direction: column;
 }
 .wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-/* --- 壁紙ギャラリー (修正版) --- */
-.wallpaper-section {
-    background: rgba(240, 248, 255, 0.95); border: 2px solid #4682b4;
-    text-align: center; padding: 10px; border-radius: 4px;
-}
-.wallpaper-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 10px; margin-top: 10px;
-}
-.wallpaper-card {
-    background: #fff; border: 1px solid #ccc; border-radius: 6px;
-    overflow: hidden; position: relative; transition: transform 0.2s;
-    display: flex; flex-direction: column;
-}
-.wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-
-/* --- ここから下が変更点 --- */
 
 /* 画像エリア：?マークを中央寄せするためにFlexbox化 */
 .wp-image-area { 
@@ -165,20 +148,18 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     background-color: #eee; 
     background-size: cover; 
     background-position: center;
-    display: flex; /* 追加 */
-    align-items: center; /* 追加 */
-    justify-content: center; /* 追加 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 未解放時のスタイル：画像を非表示にしてグレー背景にする */
+/* 未解放時のスタイル */
 .wallpaper-card.is-locked .wp-image-area { 
-    background-image: none !important; /* 強制的に画像を消す */
-    background-color: #ccc;            /* 背景をグレーに */
-    filter: none;                      /* 古い設定(グレースケール)を削除 */
-    opacity: 1;                        /* 古い設定(透過)を削除 */
+    background-image: none !important;
+    background-color: #ccc;
+    filter: none;
+    opacity: 1;
 }
-
-/* 未解放時に「？」を表示 */
 .wallpaper-card.is-locked .wp-image-area::before {
     content: "？";
     font-size: 30px;
@@ -186,21 +167,16 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     font-weight: bold;
     font-family: sans-serif;
 }
-
-/* 鍵アイコンの位置を右上に変更 */
 .wallpaper-card.is-locked::after {
     content: "🔒"; 
     position: absolute; 
     top: 0; right: 0; 
-    left: auto; transform: none; /* 古い中央寄せ設定を解除 */
+    left: auto; transform: none;
     font-size: 12px;
     background: rgba(255, 255, 255, 0.6);
     padding: 2px 4px;
     border-bottom-left-radius: 4px;
 }
-/* --- ここまでが変更点 --- */
-
-
 .wallpaper-card.is-active { border: 3px solid #ff4500; }
 .wallpaper-card.is-active::before {
     content: "使用中"; position: absolute; top: 0; right: 0;
@@ -213,6 +189,11 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .wp-btn { width: 100%; font-size: 10px; border: none; color: white; padding: 3px; border-radius: 3px; }
 .btn-unlock { background-color: #2e8b57; }
 .btn-set { background-color: #4682b4; }
+
+/* 壁紙画像がない場合のデフォルト背景 */
+.wp-image-area.no-image {
+    background-color: #ddd;
+}
 
 /* --- リスト表示 --- */
 .section { 
@@ -256,7 +237,6 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     font-size: 11px; cursor: pointer; background-color: #fff; position: relative;
 }
 .calendar-table td:hover { background-color: #f0f8ff; }
-.calendar-table td.selected-day { background-color: #fffacd !important; border: 2px solid #daa520 !important; }
 .is-today { color: #b22222; text-decoration: underline; font-weight: bold; }
 
 /* カレンダー内のドット */
@@ -356,61 +336,101 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .is-hidden { display: none !important; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* ...既存のコードの末尾に追加... */
-
-/* --- JSから移動したスタイル --- */
-
-/* 壁紙画像がない場合のデフォルト背景 */
-.wp-image-area.no-image {
-    background-color: #ddd;
-}
-
 /* カレンダー詳細：履歴なしメッセージ */
-.empty-history {
-    color: #777;
-    padding: 5px;
-    list-style: none;
-}
+.empty-history { color: #777; padding: 5px; list-style: none; }
 
 /* カレンダー詳細：完了済みマーク */
-.status-done {
-    font-size: 10px;
-    color: #d32f2f; /* 赤色 */
-    font-weight: bold;
-}
-/* --- style.css の末尾に追加してください --- */
+.status-done { font-size: 10px; color: #d32f2f; font-weight: bold; }
 
 /* ヒートマップ（草）のレベル定義：ふんわり桜色Ver */
+.heat-lvl-1 { background-color: #fff5f7 !important; color: #555 !important; }
+.heat-lvl-2 { background-color: #ffe4e1 !important; color: #555 !important; }
+.heat-lvl-3 { background-color: #ffb6c1 !important; color: #333 !important; }
+.heat-lvl-4 { background-color: #ff8da1 !important; color: white !important; font-weight: bold; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+.calendar-table td.selected-day { border: 2px solid #ff8da1 !important; background-color: #fffacd !important; color: #333 !important; }
 
-/* レベル1: ほんのり色づく程度 (ほぼ白に近いピンク) */
-.heat-lvl-1 { 
-    background-color: #fff5f7 !important; 
-    color: #555 !important;
+/* --- 成績パネル --- */
+.stats-box {
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid #4682b4; /* 青系の枠 */
 }
 
-/* レベル2: やさしい桜色 (ミスティローズ) */
-.heat-lvl-2 { 
-    background-color: #ffe4e1 !important; 
-    color: #555 !important;
+.stats-box h4 {
+    color: #4682b4;
+    border-bottom: 1px solid #4682b4;
 }
 
-/* レベル3: 明るいパステルピンク */
-.heat-lvl-3 { 
-    background-color: #ffb6c1 !important; /* ライトピンク */
-    color: #333 !important;
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #333;
 }
 
-/* レベル4: 達成感のあるピンク（濃すぎず、可愛らしい色） */
-.heat-lvl-4 { 
-    background-color: #ff8da1 !important; 
-    color: white !important; /* ここだけ白文字 */
-    font-weight: bold; 
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+.stat-value { font-size: 18px; font-weight: bold; color: #2d2d2d; }
+.unit { font-size: 10px; margin-left: 2px; }
+
+.small-stat {
+    font-size: 11px;
+    color: #666;
+    border-top: 1px dotted #ccc;
+    padding-top: 2px;
 }
 
-/* 選択された日の枠線（全体に合わせて少し柔らかく） */
-.calendar-table td.selected-day {
-    border: 2px solid #ff8da1 !important; 
-    background-color: #fffaf0 !important; /* フローラルホワイト */
-    color: #333 !important;
+/* 先週比のプラスマイナス色 */
+.diff-plus { color: #d32f2f; font-weight: bold; } /* 上昇（赤） */
+.diff-minus { color: #4169e1; font-weight: bold; } /* 下降（青） */
+.diff-even { color: #666; }
+
+/* 記録ボタン */
+.record-btn {
+    width: 100%;
+    margin-top: 5px;
+    background-color: #fff;
+    border: 1px solid #4682b4;
+    color: #4682b4;
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
+.record-btn:hover {
+    background-color: #4682b4;
+    color: white;
+}
+
+/* --- 履歴リストのデザイン --- */
+.history-area {
+    margin: 5px 0;
+    border-top: 1px dashed #ccc; /* 上に区切り線 */
+    border-bottom: 1px dashed #ccc; /* 下に区切り線 */
+    padding: 5px 0;
+}
+
+.history-list {
+    max-height: 80px;      /* 高さが80pxを超えたらスクロール */
+    overflow-y: auto;      /* スクロールバーを表示 */
+    font-size: 11px;
+    text-align: left;
+}
+
+/* スクロールバーを細くする（Chrome/Safari用） */
+.history-list::-webkit-scrollbar { width: 4px; }
+.history-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 4px;
+    background-color: #f9f9f9;
+    margin-bottom: 2px;
+    border-radius: 2px;
+    color: #555;
+}
+
+.history-date { font-size: 10px; color: #888; }
+.history-score { font-weight: bold; color: #333; }
