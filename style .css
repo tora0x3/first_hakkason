@@ -1,0 +1,380 @@
+/* --- 変数定義（色の設定） --- */
+:root {
+    --default-tag-color: #ff6347; /* タグのデフォルト色（トマト色） */
+}
+
+/* --- 基本設定 --- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    font-family: 'Yuji Syuku', serif;
+    max-width: 600px; margin: 0 auto; padding: 20px 20px 100px;
+    color: #2d2d2d;
+    background-color: #f4f4f4; /* デフォルト背景色 */
+    background-size: cover; background-position: center;
+    background-attachment: fixed; min-height: 100vh;
+    transition: background-image 0.5s ease;
+}
+body::before {
+    content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.3); z-index: -1;
+}
+
+/* --- サイドバー --- */
+.left-sidebar {
+    position: fixed; top: 20px; left: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 8px; 
+    align-items: flex-start; pointer-events: none;
+}
+.left-sidebar > * { pointer-events: auto; }
+.streak-box {
+    background-color: rgba(255, 255, 255, 0.95); border: 2px solid #daa520;
+    padding: 6px 10px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    text-align: center; min-width: 70px;
+}
+.streak-box h4 { margin: 0 0 4px 0; border-bottom: 1px solid #daa520; font-size: 12px; color: #b8860b; }
+.streak-count-area { font-size: 16px; font-weight: bold; color: #b22222; }
+.omikuji-btn {
+    background-color: #ff69b4; color: white; font-weight: bold;
+    border: 2px solid #fff; box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    padding: 6px 12px; border-radius: 20px; font-size: 12px;
+    cursor: pointer; transition: transform 0.2s;
+}
+.omikuji-btn:hover { background-color: #ff1493; transform: scale(1.05); }
+
+/* --- 右上インベントリ --- */
+.status-container {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 5px; width: 180px; 
+}
+.inventory-box {
+    background-color: rgba(255, 255, 255, 0.95); border: 1px solid #556b2f;
+    padding: 8px 12px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+.inventory-box h4 {
+    margin: 0; border-bottom: 1px solid #556b2f; text-align: center;
+    font-size: 16px; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; padding-bottom: 2px; color: #333;
+}
+.toggle-icon { font-size: 12px; margin-left: 5px; color: #555; }
+.inventory-content { overflow: hidden; transition: max-height 0.3s ease; max-height: 500px; padding-top: 4px; }
+.inventory-content.is-closed { max-height: 0; padding-top: 0; border: none; }
+.item-row { font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; color: #333; }
+.item-row > span:first-child { display: flex; align-items: center; gap: 6px; }
+
+/* 素材アイコンのスタイル */
+.item-icon {
+    width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 1px rgba(0,0,0,0.3));
+}
+
+/* --- ヘッダー・表示切り替え --- */
+.header h2 {
+    font-size: 24px; text-align: center; margin-bottom: 10px;
+    text-shadow: 1px 1px 0px white; border-bottom: 2px solid #333;
+    padding-bottom: 10px; margin-top: 20px;
+}
+.display-toggle { text-align: center; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
+.display-toggle button {
+    background-color: #696969; color: white; border: none;
+    padding: 6px 12px; cursor: pointer; font-size: 13px;
+    border-radius: 4px; transition: background-color 0.2s;
+}
+.display-toggle button.active-toggle {
+    background-color: #556b2f; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); font-weight: bold;
+}
+
+.score-box {
+    background-color: #b22222; color: white; padding: 8px 16px;
+    border-radius: 4px; font-weight: bold; text-align: center;
+    margin: 0 auto 20px; width: fit-content;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); border: 2px solid #800000;
+}
+.countdown-container { text-align: center; margin-top: 5px; margin-bottom: 15px; }
+.countdown-display {
+    font-size: 16px; color: #b22222; background: rgba(255, 255, 255, 0.9);
+    display: inline-block; padding: 4px 15px; border-radius: 5px;
+    border: 2px solid #b22222; margin-bottom: 5px;
+}
+.countdown-number { font-size: 24px; font-weight: bold; }
+.exam-setting-btn {
+    background-color: #483d8b; font-size: 11px; padding: 3px 8px;
+    border-radius: 12px; color: white; border: none; cursor: pointer;
+}
+
+/* 入力エリア */
+.input-container {
+    background: rgba(255, 255, 255, 0.9); padding: 15px;
+    border-radius: 2px; border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+}
+.input-group { display: flex; gap: 8px; }
+.input-group input { flex-grow: 1; padding: 5px; border: 1px solid #ccc; }
+.input-group select { padding: 5px; border: 1px solid #ccc; font-size: 12px; }
+button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
+
+/* 素材ショップ */
+.shop-section {
+    background: rgba(255, 248, 220, 0.9); padding: 12px;
+    border: 1px solid #d2b48c; border-radius: 4px; text-align: center; margin-bottom: 20px;
+}
+.shop-section h3 { margin: 0; font-size: 16px; color: #8b4513; }
+.shop-desc { margin: 4px 0 8px 0; font-size: 11px; color: #555; }
+.shop-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+.shop-buttons button {
+    background-color: #cd853f; color: white; border: none;
+    padding: 5px 8px; font-size: 12px; box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    min-width: 55px; line-height: 1.2;
+}
+.shop-buttons button:hover { background-color: #a0522d; }
+
+/* --- 壁紙ギャラリー --- */
+.wallpaper-section {
+    background: rgba(240, 248, 255, 0.95); border: 2px solid #4682b4;
+    text-align: center; padding: 10px; border-radius: 4px;
+}
+.wallpaper-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px; margin-top: 10px;
+}
+.wallpaper-card {
+    background: #fff; border: 1px solid #ccc; border-radius: 6px;
+    overflow: hidden; position: relative; transition: transform 0.2s;
+    display: flex; flex-direction: column;
+}
+.wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+/* --- 壁紙ギャラリー (修正版) --- */
+.wallpaper-section {
+    background: rgba(240, 248, 255, 0.95); border: 2px solid #4682b4;
+    text-align: center; padding: 10px; border-radius: 4px;
+}
+.wallpaper-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px; margin-top: 10px;
+}
+.wallpaper-card {
+    background: #fff; border: 1px solid #ccc; border-radius: 6px;
+    overflow: hidden; position: relative; transition: transform 0.2s;
+    display: flex; flex-direction: column;
+}
+.wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+
+/* --- ここから下が変更点 --- */
+
+/* 画像エリア：?マークを中央寄せするためにFlexbox化 */
+.wp-image-area { 
+    height: 70px; 
+    background-color: #eee; 
+    background-size: cover; 
+    background-position: center;
+    display: flex; /* 追加 */
+    align-items: center; /* 追加 */
+    justify-content: center; /* 追加 */
+}
+
+/* 未解放時のスタイル：画像を非表示にしてグレー背景にする */
+.wallpaper-card.is-locked .wp-image-area { 
+    background-image: none !important; /* 強制的に画像を消す */
+    background-color: #ccc;            /* 背景をグレーに */
+    filter: none;                      /* 古い設定(グレースケール)を削除 */
+    opacity: 1;                        /* 古い設定(透過)を削除 */
+}
+
+/* 未解放時に「？」を表示 */
+.wallpaper-card.is-locked .wp-image-area::before {
+    content: "？";
+    font-size: 30px;
+    color: #777;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+/* 鍵アイコンの位置を右上に変更 */
+.wallpaper-card.is-locked::after {
+    content: "🔒"; 
+    position: absolute; 
+    top: 0; right: 0; 
+    left: auto; transform: none; /* 古い中央寄せ設定を解除 */
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2px 4px;
+    border-bottom-left-radius: 4px;
+}
+/* --- ここまでが変更点 --- */
+
+
+.wallpaper-card.is-active { border: 3px solid #ff4500; }
+.wallpaper-card.is-active::before {
+    content: "使用中"; position: absolute; top: 0; right: 0;
+    background: #ff4500; color: white; font-size: 9px; padding: 2px 5px;
+    z-index: 5; border-bottom-left-radius: 4px;
+}
+.wp-info { padding: 4px; font-size: 11px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.wp-name { font-weight: bold; margin-bottom: 2px; color: #333; font-size: 10px; }
+.wp-cost { font-size: 9px; color: #555; background: #f0f0f0; border-radius: 3px; padding: 2px; margin-bottom: 4px; }
+.wp-btn { width: 100%; font-size: 10px; border: none; color: white; padding: 3px; border-radius: 3px; }
+.btn-unlock { background-color: #2e8b57; }
+.btn-set { background-color: #4682b4; }
+
+/* --- リスト表示 --- */
+.section { 
+    margin-top: 15px; background: rgba(255, 255, 255, 0.95);
+    padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.section h3 { font-size: 18px; border-bottom: 1px solid #999; margin-top: 0; }
+.section-daily { border-left: 5px solid #556b2f; }
+.section-weekly { border-left: 5px solid #483d8b; }
+.section-normal { border-left: 5px solid #696969; }
+
+.task-list { list-style: none; padding: 0; }
+.task-list li {
+    background: #f9f9f9; margin-bottom: 6px; border: 1px solid #ddd;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1); padding: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: 4px;
+}
+.task-text { flex-grow: 1; margin-right: 8px; padding-left: 4px; font-size: 14px; }
+.done { text-decoration: none; color: #555; opacity: 0.9; }
+.done::after {
+    content: "済"; display: inline-block; margin-left: 6px; width: 16px; height: 16px;
+    line-height: 14px; text-align: center; border: 1px solid #d32f2f; color: #d32f2f;
+    border-radius: 50%; font-size: 10px; font-weight: bold; transform: rotate(15deg);
+}
+.action-buttons { display: flex; gap: 3px; }
+.delete-btn { background-color: #8b0000; color:white; font-size: 11px; }
+.achieve-btn { background-color: #556b2f; color:white; font-size: 11px; }
+.achieve-btn.is-active { background-color: #8fbc8f; }
+
+/* --- カレンダー --- */
+#calendarView {
+    padding: 10px; background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px;
+}
+.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.calendar-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 15px; }
+.calendar-table th { background-color: #2f4f4f; color: white; padding: 6px 0; font-size: 11px; }
+.calendar-table td {
+    border: 1px solid #ddd; height: 60px; vertical-align: top; padding: 2px;
+    font-size: 11px; cursor: pointer; background-color: #fff; position: relative;
+}
+.calendar-table td:hover { background-color: #f0f8ff; }
+.calendar-table td.selected-day { background-color: #fffacd !important; border: 2px solid #daa520 !important; }
+.is-today { color: #b22222; text-decoration: underline; font-weight: bold; }
+
+/* カレンダー内のドット */
+.calendar-task-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 1px; }
+.dot-daily { background-color: #556b2f; }
+.dot-weekly { background-color: #483d8b; }
+.dot-normal { background-color: #696969; }
+
+/* カレンダー内のメモあり表示ドット */
+.dot-memo {
+    display: inline-block; width: 6px; height: 6px;
+    background-color: #ffa500; /* オレンジ */
+    border-radius: 50%; margin-left: 2px;
+}
+
+/* 選択日付詳細 */
+.selected-date-info { border-top: 2px dashed #ccc; padding-top: 10px; animation: fadeIn 0.3s ease; }
+#selectedDateTaskList { list-style: none; padding: 0; }
+#selectedDateTaskList li.cal-task-item {
+    padding: 6px; background-color: #fff; border: 1px solid #eee;
+    margin-bottom: 4px; font-size: 13px; display: flex;
+    align-items: center; justify-content: space-between; border-radius: 4px;
+}
+.badge { padding: 1px 5px; font-size: 9px; color: white; border-radius: 4px; margin-right: 6px; }
+.badge.daily { background-color: #556b2f; }
+.badge.weekly { background-color: #483d8b; }
+.badge.normal { background-color: #696969; }
+
+/* メモ入力＆リスト */
+.memo-section { margin-bottom: 15px; }
+.memo-input-area { background: #f8f8f8; padding: 8px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 8px; }
+#memoInput { width: 100%; height: 50px; font-size: 12px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 3px; resize: none; padding: 4px; }
+.tag-input-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+#tagNameInput { width: 80px; font-size: 12px; padding: 4px; border: 1px solid #ccc; }
+#tagColorInput { width: 30px; height: 26px; border: none; padding: 0; background: none; cursor: pointer; }
+.save-memo-btn { background-color: #4682b4; color: white; font-size: 12px; border: none; padding: 4px 10px; border-radius: 12px; margin-left: auto; }
+
+.saved-tags-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; min-height: 20px; }
+.saved-tag-chip { font-size: 10px; color: white; padding: 2px 6px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.saved-tag-del { font-weight: bold; cursor: pointer; font-size: 12px; opacity: 0.8; }
+.saved-tag-del:hover { opacity: 1; }
+
+/* 複数メモ表示リスト */
+.memo-list-container {
+    display: flex; flex-direction: column; gap: 6px;
+}
+.memo-list-item {
+    background: #fff; border: 1px solid #ddd; border-left: 4px solid #ccc;
+    padding: 6px 8px; border-radius: 3px; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+.memo-content { flex-grow: 1; margin-right: 8px; word-break: break-all; }
+.memo-tag-badge { 
+    display: inline-block; font-size: 10px; color: white; 
+    padding: 1px 5px; border-radius: 3px; margin-right: 5px; vertical-align: middle;
+}
+.memo-del-btn {
+    background: none; border: none; color: #999; font-weight: bold;
+    cursor: pointer; font-size: 14px; padding: 0 4px; line-height: 1;
+}
+.memo-del-btn:hover { color: #d32f2f; }
+
+.history-section h5 { margin: 10px 0 5px 0; font-size: 12px; color: #555; border-bottom: 1px solid #eee; }
+
+/* --- モーダル・トースト --- */
+.toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+.toast {
+    background-color: rgba(47, 79, 79, 0.95); color: #fff; padding: 10px 20px;
+    border-radius: 4px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease;
+    border: 1px solid #d4af37; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    visibility: hidden; opacity: 0; transition: opacity 0.3s;
+}
+.modal-overlay:not(.is-hidden) { visibility: visible; opacity: 1; }
+.modal-content {
+    background-color: #fff; padding: 15px; border-radius: 8px;
+    width: 85%; max-width: 350px; text-align: center; border: 2px solid #556b2f;
+}
+.modal-btn { padding: 6px 15px; border-radius: 4px; font-weight: bold; border: none; cursor: pointer; color: white;}
+.modal-btn.delete { background-color: #8b0000; }
+.modal-btn.cancel { background-color: #ccc; color: #333; }
+.modal-btn.buy { background-color: #1e90ff; }
+.modal-btn.save-exam { background-color: #483d8b; }
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+    .left-sidebar { position: static; flex-direction: row; width: 100%; margin-bottom: 10px; justify-content: center; flex-wrap: wrap; }
+    .status-container { position: static; flex-direction: row; flex-wrap: wrap; width: 100%; margin-bottom: 15px; justify-content: center;}
+    .inventory-box { flex: 1; min-width: 150px; }
+}
+.is-hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ...既存のコードの末尾に追加... */
+
+/* --- JSから移動したスタイル --- */
+
+/* 壁紙画像がない場合のデフォルト背景 */
+.wp-image-area.no-image {
+    background-color: #ddd;
+}
+
+/* カレンダー詳細：履歴なしメッセージ */
+.empty-history {
+    color: #777;
+    padding: 5px;
+    list-style: none;
+}
+
+/* カレンダー詳細：完了済みマーク */
+.status-done {
+    font-size: 10px;
+    color: #d32f2f; /* 赤色 */
+    font-weight: bold;
+}
