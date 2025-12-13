@@ -168,6 +168,8 @@ function toggleDisplayMode(mode) {
 }
 
 /* --- 壁紙機能 --- */
+/* script.js の renderWallpaperGrid 関数内 */
+
 function renderWallpaperGrid() {
     const grid = document.getElementById('wallpaperGrid');
     if(!grid) return;
@@ -178,6 +180,7 @@ function renderWallpaperGrid() {
         const isActive = (currentWallpaperId === wp.id);
         
         const card = document.createElement('div');
+        // クラス名は変更なし
         card.className = `wallpaper-card ${isUnlocked ? '' : 'is-locked'} ${isActive ? 'is-active' : ''}`;
         
         let costText = '';
@@ -187,9 +190,10 @@ function renderWallpaperGrid() {
             costText = '解放済み';
         }
 
-        // 修正: JSによるインラインスタイル指定をCSSクラスへ移動
         const imgClass = wp.src ? 'wp-image-area' : 'wp-image-area no-image';
-        const imgStyle = wp.src ? `background-image: url('${wp.src}');` : '';
+        
+        // 【重要】ここを変更しました：解放済み(isUnlocked)のときだけ画像URLを入れる
+        const imgStyle = (isUnlocked && wp.src) ? `background-image: url('${wp.src}');` : '';
 
         card.innerHTML = `
             <div class="${imgClass}" style="${imgStyle}"></div>
@@ -205,7 +209,6 @@ function renderWallpaperGrid() {
         grid.appendChild(card);
     });
 }
-
 function askUnlockWallpaper(id) {
     const wp = WALLPAPERS.find(w => w.id === id);
     if (!wp) return;
