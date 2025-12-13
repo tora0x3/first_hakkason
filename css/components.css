@@ -1,0 +1,47 @@
+/* ボタン・入力 */
+.input-container {
+    background: rgba(255, 255, 255, 0.9); padding: 15px;
+    border-radius: 2px; border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+}
+.input-group { display: flex; gap: 8px; }
+.input-group input { flex-grow: 1; padding: 5px; border: 1px solid #ccc; }
+.input-group select { padding: 5px; border: 1px solid #ccc; font-size: 12px; }
+
+/* 表示切り替えボタン */
+.display-toggle { text-align: center; margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; }
+.display-toggle button {
+    background-color: #696969; color: white; border: none;
+    padding: 6px 12px; cursor: pointer; font-size: 13px;
+    border-radius: 4px; transition: background-color 0.2s;
+}
+.display-toggle button.active-toggle {
+    background-color: #556b2f; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); font-weight: bold;
+}
+
+/* モーダル */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    visibility: hidden; opacity: 0; transition: opacity 0.3s;
+}
+.modal-overlay:not(.is-hidden) { visibility: visible; opacity: 1; }
+.modal-content {
+    background-color: #fff; padding: 15px; border-radius: 8px;
+    width: 85%; max-width: 350px; text-align: center; border: 2px solid #556b2f;
+}
+.modal-btn { padding: 6px 15px; border-radius: 4px; font-weight: bold; border: none; cursor: pointer; color: white;}
+.modal-btn.delete { background-color: #8b0000; }
+.modal-btn.cancel { background-color: #ccc; color: #333; }
+.modal-btn.buy { background-color: #1e90ff; }
+.modal-btn.save-exam { background-color: #483d8b; }
+
+/* トースト */
+.toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+.toast {
+    background-color: rgba(47, 79, 79, 0.95); color: #fff; padding: 10px 20px;
+    border-radius: 4px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease;
+    border: 1px solid #d4af37; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateY(0); }

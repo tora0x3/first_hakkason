@@ -1,0 +1,28 @@
+body { max-width: 600px; margin: 0 auto; padding: 20px 20px 100px; }
+
+/* 左サイドバー */
+.left-sidebar {
+    position: fixed; top: 20px; left: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 8px; 
+    align-items: flex-start; pointer-events: none;
+}
+.left-sidebar > * { pointer-events: auto; }
+
+/* 右上インベントリ */
+.status-container {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    display: flex; flex-direction: column; gap: 5px; width: 180px; 
+}
+
+/* ヘッダー */
+.header h2 {
+    font-size: 24px; text-align: center; margin-bottom: 10px;
+    text-shadow: 1px 1px 0px white; border-bottom: 2px solid #333;
+    padding-bottom: 10px; margin-top: 20px;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    .left-sidebar { position: static; flex-direction: row; width: 100%; margin-bottom: 10px; justify-content: center; flex-wrap: wrap; }
+    .status-container { position: static; flex-direction: row; flex-wrap: wrap; width: 100%; margin-bottom: 15px; justify-content: center;}
+}

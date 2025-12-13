@@ -1,0 +1,161 @@
+/* --- タスクリスト --- */
+.section { 
+    margin-top: 15px; background: rgba(255, 255, 255, 0.95);
+    padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.section h3 { font-size: 18px; border-bottom: 1px solid #999; margin-top: 0; }
+.section-daily { border-left: 5px solid #556b2f; }
+.section-weekly { border-left: 5px solid #483d8b; }
+.section-normal { border-left: 5px solid #696969; }
+.task-list { list-style: none; padding: 0; }
+.task-list li {
+    background: #f9f9f9; margin-bottom: 6px; border: 1px solid #ddd;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1); padding: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: 4px;
+}
+.task-text { flex-grow: 1; margin-right: 8px; padding-left: 4px; font-size: 14px; }
+.done { text-decoration: none; color: #555; opacity: 0.9; }
+.done::after {
+    content: "済"; display: inline-block; margin-left: 6px; width: 16px; height: 16px;
+    line-height: 14px; text-align: center; border: 1px solid #d32f2f; color: #d32f2f;
+    border-radius: 50%; font-size: 10px; font-weight: bold; transform: rotate(15deg);
+}
+.action-buttons { display: flex; gap: 3px; }
+.delete-btn { background-color: #8b0000; color:white; font-size: 11px; }
+.achieve-btn { background-color: #556b2f; color:white; font-size: 11px; }
+.achieve-btn.is-active { background-color: #8fbc8f; }
+
+/* --- インベントリ表示 --- */
+.inventory-box {
+    background-color: rgba(255, 255, 255, 0.95); border: 1px solid #556b2f;
+    padding: 8px 12px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+.inventory-box h4 {
+    margin: 0; border-bottom: 1px solid #556b2f; text-align: center;
+    font-size: 16px; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center; padding-bottom: 2px; color: #333;
+}
+.toggle-icon { font-size: 12px; margin-left: 5px; color: #555; }
+.inventory-content { overflow: hidden; transition: max-height 0.3s ease; max-height: 500px; padding-top: 4px; }
+.inventory-content.is-closed { max-height: 0; padding-top: 0; border: none; }
+.item-row { font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; color: #333; }
+.item-row > span:first-child { display: flex; align-items: center; gap: 6px; }
+.item-icon { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 1px rgba(0,0,0,0.3)); }
+
+/* --- カレンダー --- */
+#calendarView {
+    padding: 10px; background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px;
+}
+.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.calendar-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 15px; }
+.calendar-table th { background-color: #2f4f4f; color: white; padding: 6px 0; font-size: 11px; }
+.calendar-table td {
+    border: 1px solid #ddd; height: 60px; vertical-align: top; padding: 2px;
+    font-size: 11px; cursor: pointer; background-color: #fff; position: relative;
+}
+.calendar-table td:hover { background-color: #f0f8ff; }
+.is-today { color: #b22222; text-decoration: underline; font-weight: bold; }
+.calendar-task-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 1px; }
+.dot-daily { background-color: #556b2f; }
+.dot-weekly { background-color: #483d8b; }
+.dot-normal { background-color: #696969; }
+.dot-memo { display: inline-block; width: 6px; height: 6px; background-color: #ffa500; border-radius: 50%; margin-left: 2px; }
+.heat-lvl-1 { background-color: #fff5f7 !important; color: #555 !important; }
+.heat-lvl-2 { background-color: #ffe4e1 !important; color: #555 !important; }
+.heat-lvl-3 { background-color: #ffb6c1 !important; color: #333 !important; }
+.heat-lvl-4 { background-color: #ff8da1 !important; color: white !important; font-weight: bold; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+.calendar-table td.selected-day { border: 2px solid #ff8da1 !important; background-color: #fffacd !important; color: #333 !important; }
+.selected-date-info { border-top: 2px dashed #ccc; padding-top: 10px; animation: fadeIn 0.3s ease; }
+#selectedDateTaskList { list-style: none; padding: 0; }
+#selectedDateTaskList li.cal-task-item {
+    padding: 6px; background-color: #fff; border: 1px solid #eee;
+    margin-bottom: 4px; font-size: 13px; display: flex;
+    align-items: center; justify-content: space-between; border-radius: 4px;
+}
+.badge { padding: 1px 5px; font-size: 9px; color: white; border-radius: 4px; margin-right: 6px; }
+.badge.daily { background-color: #556b2f; }
+.badge.weekly { background-color: #483d8b; }
+.badge.normal { background-color: #696969; }
+.empty-history { color: #777; padding: 5px; list-style: none; }
+.status-done { font-size: 10px; color: #d32f2f; font-weight: bold; }
+
+/* メモ・タグ */
+.memo-section { margin-bottom: 15px; }
+.memo-input-area { background: #f8f8f8; padding: 8px; border-radius: 4px; border: 1px solid #eee; margin-bottom: 8px; }
+#memoInput { width: 100%; height: 50px; font-size: 12px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 3px; resize: none; padding: 4px; }
+.tag-input-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+#tagNameInput { width: 80px; font-size: 12px; padding: 4px; border: 1px solid #ccc; }
+#tagColorInput { width: 30px; height: 26px; border: none; padding: 0; background: none; cursor: pointer; }
+.save-memo-btn { background-color: #4682b4; color: white; font-size: 12px; border: none; padding: 4px 10px; border-radius: 12px; margin-left: auto; }
+.saved-tags-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; min-height: 20px; }
+.saved-tag-chip { font-size: 10px; color: white; padding: 2px 6px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.saved-tag-del { font-weight: bold; cursor: pointer; font-size: 12px; opacity: 0.8; }
+.saved-tag-del:hover { opacity: 1; }
+.memo-list-container { display: flex; flex-direction: column; gap: 6px; }
+.memo-list-item {
+    background: #fff; border: 1px solid #ddd; border-left: 4px solid #ccc;
+    padding: 6px 8px; border-radius: 3px; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+.memo-content { flex-grow: 1; margin-right: 8px; word-break: break-all; }
+.memo-tag-badge { display: inline-block; font-size: 10px; color: white; padding: 1px 5px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+.memo-del-btn { background: none; border: none; color: #999; font-weight: bold; cursor: pointer; font-size: 14px; padding: 0 4px; line-height: 1; }
+.memo-del-btn:hover { color: #d32f2f; }
+
+/* --- 壁紙ギャラリー --- */
+.wallpaper-section { background: rgba(240, 248, 255, 0.95); border: 2px solid #4682b4; text-align: center; padding: 10px; border-radius: 4px; }
+.wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
+.wallpaper-card { background: #fff; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; position: relative; transition: transform 0.2s; display: flex; flex-direction: column; }
+.wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+.wp-image-area { height: 70px; background-color: #eee; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+.wallpaper-card.is-locked .wp-image-area { background-image: none !important; background-color: #ccc; filter: none; opacity: 1; }
+.wallpaper-card.is-locked .wp-image-area::before { content: "？"; font-size: 30px; color: #777; font-weight: bold; font-family: sans-serif; }
+.wallpaper-card.is-locked::after { content: "🔒"; position: absolute; top: 0; right: 0; left: auto; transform: none; font-size: 12px; background: rgba(255, 255, 255, 0.6); padding: 2px 4px; border-bottom-left-radius: 4px; }
+.wallpaper-card.is-active { border: 3px solid #ff4500; }
+.wallpaper-card.is-active::before { content: "使用中"; position: absolute; top: 0; right: 0; background: #ff4500; color: white; font-size: 9px; padding: 2px 5px; z-index: 5; border-bottom-left-radius: 4px; }
+.wp-info { padding: 4px; font-size: 11px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.wp-name { font-weight: bold; margin-bottom: 2px; color: #333; font-size: 10px; }
+.wp-cost { font-size: 9px; color: #555; background: #f0f0f0; border-radius: 3px; padding: 2px; margin-bottom: 4px; }
+.wp-btn { width: 100%; font-size: 10px; border: none; color: white; padding: 3px; border-radius: 3px; }
+.btn-unlock { background-color: #2e8b57; }
+.btn-set { background-color: #4682b4; }
+.wp-image-area.no-image { background-color: #ddd; }
+
+/* --- ショップ・成績・おみくじ --- */
+.shop-section { background: rgba(255, 248, 220, 0.9); padding: 12px; border: 1px solid #d2b48c; border-radius: 4px; text-align: center; margin-bottom: 20px; }
+.shop-section h3 { margin: 0; font-size: 16px; color: #8b4513; }
+.shop-desc { margin: 4px 0 8px 0; font-size: 11px; color: #555; }
+.shop-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+.shop-buttons button { background-color: #cd853f; color: white; border: none; padding: 5px 8px; font-size: 12px; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); min-width: 55px; line-height: 1.2; }
+.shop-buttons button:hover { background-color: #a0522d; }
+.score-box { background-color: #b22222; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold; text-align: center; margin: 0 auto 20px; width: fit-content; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); border: 2px solid #800000; }
+.countdown-container { text-align: center; margin-top: 5px; margin-bottom: 15px; }
+.countdown-display { font-size: 16px; color: #b22222; background: rgba(255, 255, 255, 0.9); display: inline-block; padding: 4px 15px; border-radius: 5px; border: 2px solid #b22222; margin-bottom: 5px; }
+.countdown-number { font-size: 24px; font-weight: bold; }
+.exam-setting-btn { background-color: #483d8b; font-size: 11px; padding: 3px 8px; border-radius: 12px; color: white; border: none; cursor: pointer; }
+.streak-box { background-color: rgba(255, 255, 255, 0.95); border: 2px solid #daa520; padding: 6px 10px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); text-align: center; min-width: 70px; }
+.streak-box h4 { margin: 0 0 4px 0; border-bottom: 1px solid #daa520; font-size: 12px; color: #b8860b; }
+.streak-count-area { font-size: 16px; font-weight: bold; color: #b22222; }
+.omikuji-btn { background-color: #ff69b4; color: white; font-weight: bold; border: 2px solid #fff; box-shadow: 0 0 5px rgba(255, 105, 180, 0.5); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: transform 0.2s; }
+.omikuji-btn:hover { background-color: #ff1493; transform: scale(1.05); }
+.stats-box { margin-top: 5px; background-color: rgba(255, 255, 255, 0.95); border: 2px solid #4682b4; }
+.stats-box h4 { color: #4682b4; border-bottom: 1px solid #4682b4; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 4px; color: #333; }
+.stat-value { font-size: 18px; font-weight: bold; color: #2d2d2d; }
+.unit { font-size: 10px; margin-left: 2px; }
+.small-stat { font-size: 11px; color: #666; border-top: 1px dotted #ccc; padding-top: 2px; }
+.diff-plus { color: #d32f2f; font-weight: bold; } 
+.diff-minus { color: #4169e1; font-weight: bold; } 
+.diff-even { color: #666; }
+.record-btn { width: 100%; margin-top: 5px; background-color: #fff; border: 1px solid #4682b4; color: #4682b4; font-size: 10px; padding: 2px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+.record-btn:hover { background-color: #4682b4; color: white; }
+.history-area { margin: 5px 0; border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc; padding: 5px 0; }
+.history-list { max-height: 80px; overflow-y: auto; font-size: 11px; text-align: left; }
+.history-list::-webkit-scrollbar { width: 4px; }
+.history-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+.history-item { display: flex; justify-content: space-between; padding: 2px 4px; background-color: #f9f9f9; margin-bottom: 2px; border-radius: 2px; color: #555; }
+.history-date { font-size: 10px; color: #888; }
+.history-score { font-weight: bold; color: #333; }

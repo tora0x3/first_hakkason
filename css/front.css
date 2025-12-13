@@ -18,7 +18,7 @@ body {
     color: var(--text-color);
     
     /* 背景画像設定 */
-    background-image: url('表紙/hyoushi.jpg');
+    background-image: url('../画像/hyoushi.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
