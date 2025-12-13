@@ -423,10 +423,15 @@ function drawOmikuji() {
 }
 
 function changeMonth(d) { currentCalendarDate.setMonth(currentCalendarDate.getMonth()+d); renderCalendarView(); selectedDateInfo.classList.add('is-hidden'); }
+
+// 【修正箇所】カレンダーの日曜始まり対応
 function renderCalendarView() {
     const y=currentCalendarDate.getFullYear(), m=currentCalendarDate.getMonth();
     const first=new Date(y,m,1), last=new Date(y,m+1,0);
-    const start=first.getDay()===0?6:first.getDay()-1;
+    
+    // 修正: 日曜=0, 月曜=1... なので getDay() をそのまま使用
+    const start = first.getDay(); 
+
     currentMonthDisplay.textContent=`${y}年 ${m+1}月`; calendarTableBody.innerHTML='';
     let d=1;
     for(let i=0;i<6;i++){
@@ -452,6 +457,7 @@ function renderCalendarView() {
         calendarTableBody.appendChild(row);
     }
 }
+
 function showDateDetails(date) {
     selectedDateStr=date; selectedDateInfo.classList.remove('is-hidden'); selectedDateTitle.textContent=`${date} の詳細`;
     
@@ -590,7 +596,7 @@ function updateTimers() {
     if(w) w.textContent=`(あと${Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate()+(1+7-n.getDay())%7).setHours(24,0,0,0)-n)/86400000)}日)`;
 }
 
-// 初期化実行
+// 初期化実行aaa
 init();
 
 /* --- イベントリスナー --- */
