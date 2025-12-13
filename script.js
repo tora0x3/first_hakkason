@@ -449,7 +449,31 @@ function renderCalendarView() {
                  dot.className = 'dot-memo'; 
                  cell.appendChild(dot);
             }
-            tasks.filter(t=>t.isDone&&t.lastDoneDate===ymd).forEach(t=>{const dot=document.createElement('div');dot.className=`calendar-task-dot dot-${t.type}`;cell.appendChild(dot);});
+            // その日の完了済みタスクを取得
+            const doneTasksForDay = tasks.filter(t => t.isDone && t.lastDoneDate === ymd);
+            
+            // ドット表示（既存機能）
+            doneTasksForDay.forEach(t => {
+                const dot = document.createElement('div');
+                dot.className = `calendar-task-dot dot-${t.type}`;
+                cell.appendChild(dot);
+            });
+
+            // 背景色の決定（完了数に応じてクラスを付与）
+            const doneCount = doneTasksForDay.length;
+            if (doneCount > 0) {
+                if (doneCount >= 5) {
+                    cell.classList.add('heat-lvl-4'); // 5個以上: レベル4
+                } else if (doneCount >= 3) {
+                    cell.classList.add('heat-lvl-3'); // 3-4個: レベル3
+                } else if (doneCount >= 2) {
+                    cell.classList.add('heat-lvl-2'); // 2個: レベル2
+                } else {
+                    cell.classList.add('heat-lvl-1'); // 1個: レベル1
+                }
+            }
+            // --- ★ここまで変更点 ---
+
             if(ymd===selectedDateStr) cell.classList.add('selected-day');
             cell.onclick=()=>{ document.querySelectorAll('.selected-day').forEach(e=>e.classList.remove('selected-day')); cell.classList.add('selected-day'); showDateDetails(ymd); };
             row.appendChild(cell); d++;

@@ -378,3 +378,39 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     color: #d32f2f; /* 赤色 */
     font-weight: bold;
 }
+/* --- style.css の末尾に追加してください --- */
+
+/* ヒートマップ（草）のレベル定義：ふんわり桜色Ver */
+
+/* レベル1: ほんのり色づく程度 (ほぼ白に近いピンク) */
+.heat-lvl-1 { 
+    background-color: #fff5f7 !important; 
+    color: #555 !important;
+}
+
+/* レベル2: やさしい桜色 (ミスティローズ) */
+.heat-lvl-2 { 
+    background-color: #ffe4e1 !important; 
+    color: #555 !important;
+}
+
+/* レベル3: 明るいパステルピンク */
+.heat-lvl-3 { 
+    background-color: #ffb6c1 !important; /* ライトピンク */
+    color: #333 !important;
+}
+
+/* レベル4: 達成感のあるピンク（濃すぎず、可愛らしい色） */
+.heat-lvl-4 { 
+    background-color: #ff8da1 !important; 
+    color: white !important; /* ここだけ白文字 */
+    font-weight: bold; 
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+
+/* 選択された日の枠線（全体に合わせて少し柔らかく） */
+.calendar-table td.selected-day {
+    border: 2px solid #ff8da1 !important; 
+    background-color: #fffaf0 !important; /* フローラルホワイト */
+    color: #333 !important;
+}
