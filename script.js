@@ -70,15 +70,15 @@ function getDefaultTagColor() {
 const UNIFIED_COST = { belt: 1, body: 1, bezel: 1, chip: 1, light: 1 };
 const WALLPAPERS = [
     { id: 1, name: '夕暮れ', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsL_UyrMb3RJh09uLU2knr82UmhinzsdvHzw&s', cost: null },
-    { id: 2, name: '敷石の波紋', src: '敷石の波紋.png', cost: UNIFIED_COST },
-    { id: 3, name: '夏夜の花火', src: '夏夜の花火.png', cost: UNIFIED_COST },
-    { id: 4, name: '静寂の青', src: '', cost: UNIFIED_COST },
-    { id: 5, name: '勝利の赤', src: '', cost: UNIFIED_COST },
-    { id: 6, name: '集中モード', src: '', cost: UNIFIED_COST },
-    { id: 7, name: '桜咲く', src: '', cost: UNIFIED_COST },
-    { id: 8, name: 'サイバー', src: '', cost: UNIFIED_COST },
-    { id: 9, name: '和紙の心', src: '', cost: UNIFIED_COST },
-    { id: 10, name: '伝説の絶景', src: 'らいちゅうもどき.png', cost: UNIFIED_COST }
+    { id: 2, name: '敷石の波紋', src: '画像/敷石の波紋.png', cost: UNIFIED_COST },
+    { id: 3, name: '夏夜の花火', src: '画像/夏夜の花火.png', cost: UNIFIED_COST },
+    { id: 4, name: '京の都', src: '画像/京の都.png', cost: UNIFIED_COST },
+    { id: 5, name: '夕焼けと風車小屋', src: '画像/夕焼けと風車小屋.png', cost: UNIFIED_COST },
+    { id: 6, name: '木漏れ日の誘い', src: '画像/木漏れ日の誘い.png', cost: UNIFIED_COST },
+    { id: 7, name: '紅葉を映す額縁', src: '画像/紅葉を映す額縁.png', cost: UNIFIED_COST },
+    { id: 8, name: '青竹の参道', src: '画像/青竹の参道.png', cost: UNIFIED_COST },
+    { id: 9, name: '宵闇に灯る守り火', src: '画像/宵闇に灯る守り火.png', cost: UNIFIED_COST },
+    { id: 10, name: '電光石火', src: '画像/らいちゅうもどき.png', cost: UNIFIED_COST }
 ];
 
 const POINTS = { daily: 10, weekly: 20, normal: 10 };
