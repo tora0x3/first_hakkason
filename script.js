@@ -71,7 +71,7 @@ const UNIFIED_COST = { belt: 1, body: 1, bezel: 1, chip: 1, light: 1 };
 const WALLPAPERS = [
     { id: 1, name: '夕暮れ', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsL_UyrMb3RJh09uLU2knr82UmhinzsdvHzw&s', cost: null },
     { id: 2, name: '敷石の波紋', src: 'https://conne-post.genbacloud.com/693ce5a125b9adcdda559e6d?p=b5b99024b39c7e1790fb7d9b1f6b165531919d8ae7d33de2547fe7fec75482a1&e=da09096e00a5bc672aebb7bc996cc304fbf519643a07683dbc3a0681ced77722', cost: UNIFIED_COST },
-    { id: 3, name: '夏夜の花火', src: '夏夜の花火.png', cost: UNIFIED_COST },
+    { id: 3, name: '夏夜の花火', src: 'https://conne-post.genbacloud.com/693ced75bd3ab529d2147a9e?p=939b491990f44e3c767575568d5b5e477205100a9f0eef05942d4610b5c106c5&e=8d653d42df2572256acc265fd01e724f226994a44cd4312e913e5eaf766faa2f', cost: UNIFIED_COST },
     { id: 4, name: '静寂の青', src: '', cost: UNIFIED_COST },
     { id: 5, name: '勝利の赤', src: '', cost: UNIFIED_COST },
     { id: 6, name: '集中モード', src: '', cost: UNIFIED_COST },
