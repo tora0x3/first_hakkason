@@ -1,0 +1,25 @@
+/* モーダル・トースト */
+.toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+.toast {
+    background-color: rgba(47, 79, 79, 0.95); color: #fff; padding: 10px 20px;
+    border-radius: 4px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease;
+    border: 1px solid #d4af37; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    visibility: hidden; opacity: 0; transition: opacity 0.3s;
+}
+.modal-overlay:not(.is-hidden) { visibility: visible; opacity: 1; }
+.modal-content {
+    background-color: #fff; padding: 15px; border-radius: 8px;
+    width: 85%; max-width: 350px; text-align: center; border: 2px solid #556b2f;
+}
+.modal-btn { padding: 6px 15px; border-radius: 4px; font-weight: bold; border: none; cursor: pointer; color: white;}
+.modal-btn.delete { background-color: #8b0000; }
+.modal-btn.cancel { background-color: #ccc; color: #333; }
+.modal-btn.buy { background-color: #1e90ff; }
+.modal-btn.save-exam { background-color: #483d8b; }

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -21,14 +21,13 @@
             </div>
             
             <div class="history-area">
-                <div id="weeklyHistory" class="history-list">
-                    </div>
+                <div id="weeklyHistory" class="history-list"></div>
             </div>
             <div class="stat-row small-stat">
                 <span>先週比:</span>
                 <span id="weeklyDiff" class="stat-diff">--</span>
             </div>
-            <button class="record-btn" onclick="openScoreModal()">✏️ 記録</button>
+            <button class="record-btn" id="openScoreModalBtn">✏️ 記録</button>
         </div>
 
         <div class="streak-box">
@@ -36,14 +35,14 @@
             <div class="streak-count-area"><span id="streak-count">0</span> 日</div>
         </div>
         <div class="omikuji-container">
-            <button id="omikujiBtn" class="omikuji-btn" onclick="drawOmikuji()">🥠 今日の運勢</button>
+            <button id="omikujiBtn" class="omikuji-btn">🥠 今日の運勢</button>
         </div>
     </div>
 
     <div class="status-container">
         <div class="inventory-box item-display">
-            <h4 onclick="toggleInventory(this)">所持素材 <span class="toggle-icon">▼</span></h4>
-            <div class="inventory-content">
+            <h4 id="toggleInventoryBtn">所持素材 <span class="toggle-icon">▼</span></h4>
+            <div class="inventory-content" id="inventoryContent">
                 <div class="item-row"><span><img src="画像/ペンキ.png" alt="ペンキ" class="item-icon">ペンキ:</span> <span id="count-belt">0</span></div>
                 <div class="item-row"><span><img src="画像/筆.png" alt="筆" class="item-icon">筆:</span> <span id="count-body">0</span></div>
                 <div class="item-row"><span><img src="画像/布.png" alt="布" class="item-icon">布:</span> <span id="count-bezel">0</span></div>
@@ -60,13 +59,13 @@
             <div id="countdownDisplay" class="countdown-display is-hidden">
                 試験まであと <span id="countdownDays" class="countdown-number">0</span> 日！
             </div>
-            <button id="setExamDateBtn" class="exam-setting-btn" onclick="openExamModal()">📅 試験日設定</button>
+            <button id="setExamDateBtn" class="exam-setting-btn">📅 試験日設定</button>
         </div>
 
         <div class="display-toggle">
-            <button id="toggleListBtn" class="active-toggle" onclick="toggleDisplayMode('list')">リスト</button>
-            <button id="toggleCalendarBtn" onclick="toggleDisplayMode('calendar')">カレンダー</button>
-            <button id="toggleWallpaperBtn" onclick="toggleDisplayMode('wallpaper')">壁紙ギャラリー</button>
+            <button id="toggleListBtn" class="active-toggle" data-target="list">リスト</button>
+            <button id="toggleCalendarBtn" data-target="calendar">カレンダー</button>
+            <button id="toggleWallpaperBtn" data-target="wallpaper">壁紙ギャラリー</button>
         </div>
 
         <div class="score-box">
@@ -89,12 +88,12 @@
     <div class="shop-section">
         <h3>画材店 (素材ショップ)</h3>
         <p class="shop-desc">ポイント(100pt)で素材を購入し、壁紙をアンロックしよう！</p>
-        <div class="shop-buttons">
-            <button onclick="askBuyItem('belt')">ペンキ</button>
-            <button onclick="askBuyItem('body')">筆</button>
-            <button onclick="askBuyItem('bezel')">布</button>
-            <button onclick="askBuyItem('chip')">キャンバス</button>
-            <button onclick="askBuyItem('light')">設計図</button>
+        <div class="shop-buttons" id="shopButtons">
+            <button data-item="belt">ペンキ</button>
+            <button data-item="body">筆</button>
+            <button data-item="bezel">布</button>
+            <button data-item="chip">キャンバス</button>
+            <button data-item="light">設計図</button>
         </div>
     </div>
 
@@ -105,8 +104,8 @@
             <div class="done-header is-open">
                 <h4 class="done-title">達成済み</h4>
                 <div class="done-controls">
-                    <button class="bulk-delete-btn" onclick="confirmBulkDelete('daily')">一括削除</button>
-                    <button class="toggle-btn" onclick="toggleList('dailyListCleared', this)">▼ 隠す</button>
+                    <button class="bulk-delete-btn" data-type="daily">一括削除</button>
+                    <button class="toggle-list-btn" data-target="dailyListCleared">▼ 隠す</button>
                 </div>
             </div>
             <ul id="dailyListCleared" class="task-list cleared-list"></ul>
@@ -118,8 +117,8 @@
             <div class="done-header is-open">
                 <h4 class="done-title">達成済み</h4>
                 <div class="done-controls">
-                    <button class="bulk-delete-btn" onclick="confirmBulkDelete('weekly')">一括削除</button>
-                    <button class="toggle-btn" onclick="toggleList('weeklyListCleared', this)">▼ 隠す</button>
+                    <button class="bulk-delete-btn" data-type="weekly">一括削除</button>
+                    <button class="toggle-list-btn" data-target="weeklyListCleared">▼ 隠す</button>
                 </div>
             </div>
             <ul id="weeklyListCleared" class="task-list cleared-list"></ul>
@@ -131,8 +130,8 @@
             <div class="done-header is-open">
                 <h4 class="done-title">達成済み</h4>
                 <div class="done-controls">
-                    <button class="bulk-delete-btn" onclick="confirmBulkDelete('normal')">一括削除</button>
-                    <button class="toggle-btn" onclick="toggleList('normalListCleared', this)">▼ 隠す</button>
+                    <button class="bulk-delete-btn" data-type="normal">一括削除</button>
+                    <button class="toggle-list-btn" data-target="normalListCleared">▼ 隠す</button>
                 </div>
             </div>
             <ul id="normalListCleared" class="task-list cleared-list"></ul>
@@ -141,9 +140,9 @@
 
     <div id="calendarView" class="is-hidden">
         <div class="calendar-controls">
-            <button onclick="changeMonth(-1)">前の月</button>
+            <button id="prevMonthBtn">前の月</button>
             <h3 id="currentMonth"></h3>
-            <button onclick="changeMonth(1)">次の月</button>
+            <button id="nextMonthBtn">次の月</button>
         </div>
         <table class="calendar-table">
             <thead><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr></thead>
@@ -158,7 +157,7 @@
                     <div class="tag-input-row">
                         <input type="text" id="tagNameInput" placeholder="タグ名" maxlength="6">
                         <input type="color" id="tagColorInput" value="#ff6347">
-                        <button class="save-memo-btn" onclick="addMemo()">＋追加</button>
+                        <button class="save-memo-btn" id="addMemoBtn">＋追加</button>
                     </div>
                     <div id="savedTagsList" class="saved-tags-list"></div>
                 </div>
@@ -191,7 +190,7 @@
             <div id="modalBody" class="modal-body-content"><p id="modalMessage" class="modal-message"></p></div>
             <div class="modal-buttons">
                 <button id="modalConfirmBtn" class="modal-btn delete">実行する</button>
-                <button class="modal-btn cancel" onclick="closeModal()">キャンセル</button>
+                <button class="modal-btn cancel" id="modalCancelBtn">キャンセル</button>
             </div>
         </div>
     </div>
@@ -202,8 +201,8 @@
             <p class="exam-modal-desc">目標日を設定してください。</p>
             <input type="date" id="examDateInput">
             <div class="modal-buttons">
-                <button class="modal-btn save-exam" onclick="saveExamDate()">保存</button>
-                <button class="modal-btn cancel" onclick="closeExamModal()">閉じる</button>
+                <button class="modal-btn save-exam" id="saveExamDateBtn">保存</button>
+                <button class="modal-btn cancel" id="closeExamModalBtn">閉じる</button>
             </div>
         </div>
     </div>
@@ -217,12 +216,12 @@
                 <span style="align-self:center; font-weight:bold;">%</span>
             </div>
             <div class="modal-buttons">
-                <button class="modal-btn save-exam" onclick="saveScore()">記録する</button>
-                <button class="modal-btn cancel" onclick="closeScoreModal()">閉じる</button>
+                <button class="modal-btn save-exam" id="saveScoreBtn">記録する</button>
+                <button class="modal-btn cancel" id="closeScoreModalBtn">閉じる</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
