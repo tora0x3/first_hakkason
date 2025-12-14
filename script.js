@@ -16,12 +16,17 @@ const tagColorInput = document.getElementById('tagColorInput');
 const dailyMemoList = document.getElementById('dailyMemoList');
 const savedTagsList = document.getElementById('savedTagsList');
 
-// 成績関連
+// 成績関連 (入力モーダル)
 const scoreModal = document.getElementById('scoreModal');
 const scoreInput = document.getElementById('scoreInput');
-const weeklyAverageDisplay = document.getElementById('weeklyAverage');
-const weeklyDiffDisplay = document.getElementById('weeklyDiff');
-const weeklyHistoryDisplay = document.getElementById('weeklyHistory');
+
+// 成績関連 (管理画面)
+const scoreView = document.getElementById('scoreView');
+const thisWeekAverageDisplay = document.getElementById('thisWeekAverage'); // 新規
+const scoreViewWeeklyDiff = document.getElementById('scoreViewWeeklyDiff'); // 新規
+const totalAverageDisplay = document.getElementById('totalAverage');
+const maxScoreDisplay = document.getElementById('maxScore');
+const scoreHistoryBody = document.getElementById('scoreHistoryBody');
 
 // リスト表示用
 const listElements = {
@@ -49,7 +54,8 @@ const wallpaperView = document.getElementById('wallpaperView');
 const toggleBtns = {
     list: document.getElementById('toggleListBtn'),
     calendar: document.getElementById('toggleCalendarBtn'),
-    wallpaper: document.getElementById('toggleWallpaperBtn')
+    wallpaper: document.getElementById('toggleWallpaperBtn'),
+    score: document.getElementById('toggleScoreBtn')
 };
 
 // カレンダー用
@@ -129,7 +135,9 @@ function init() {
     renderCalendarView();
     applyWallpaper(currentWallpaperId);
     renderWallpaperGrid();
-    updateScoreStats();
+    
+    // 初回レンダリング（成績画面の更新も含める）
+    renderScoreView();
     toggleDisplayMode('list'); 
 }
 
@@ -146,6 +154,7 @@ function toggleDisplayMode(mode) {
     listView.classList.add('is-hidden');
     calendarView.classList.add('is-hidden');
     wallpaperView.classList.add('is-hidden');
+    scoreView.classList.add('is-hidden');
 
     if (mode === 'list') {
         listView.classList.remove('is-hidden');
@@ -161,6 +170,10 @@ function toggleDisplayMode(mode) {
         wallpaperView.classList.remove('is-hidden');
         toggleBtns.wallpaper.classList.add('active-toggle');
         renderWallpaperGrid();
+    } else if (mode === 'score') {
+        scoreView.classList.remove('is-hidden');
+        toggleBtns.score.classList.add('active-toggle');
+        renderScoreView();
     }
 }
 
@@ -350,6 +363,9 @@ modalConfirmBtn.addEventListener('click', () => {
             localStorage.setItem('feTags', JSON.stringify(savedTags));
             renderSavedTags();
             showToast('タグを削除しました');
+            break;
+        case 'deleteScore':
+            deleteScore(pendingTargetIndex);
             break;
     }
     closeModal();
@@ -545,10 +561,12 @@ function saveScore() {
     examScores.push({ date: today, score: val });
     localStorage.setItem('feExamScores', JSON.stringify(examScores));
     showToast(`成績 ${val}% を記録しました`);
-    updateScoreStats();
+    
+    renderScoreView(); // 成績画面を更新
     closeScoreModal();
 }
 
+// 期間内平均計算ヘルパー
 function calculateAverageInrange(startDate, endDate) {
     const targets = examScores.filter(item => {
         const d = new Date(item.date);
@@ -560,11 +578,29 @@ function calculateAverageInrange(startDate, endDate) {
     return total / targets.length;
 }
 
-function updateScoreStats() {
+// 成績管理画面のレンダリング（先週比計算もここで行う）
+function renderScoreView() {
+    // 統計計算
+    if (examScores.length === 0) {
+        thisWeekAverageDisplay.textContent = '--';
+        scoreViewWeeklyDiff.textContent = '';
+        totalAverageDisplay.textContent = '--';
+        maxScoreDisplay.textContent = '--';
+        scoreHistoryBody.innerHTML = '<tr><td colspan="3" style="color:#999; padding:20px;">データがありません</td></tr>';
+        return;
+    }
+
+    // 全期間
+    const total = examScores.reduce((sum, v) => sum + v.score, 0);
+    const avg = total / examScores.length;
+    const max = Math.max(...examScores.map(v => v.score));
+
+    totalAverageDisplay.textContent = avg.toFixed(1);
+    maxScoreDisplay.textContent = max.toFixed(1);
+
+    // 今週・先週の計算
     const now = new Date();
-    
-    // 今週の日曜日（開始日）を計算（日曜始まり）
-    const dayOfWeek = now.getDay(); // 0(日)~6(土)
+    const dayOfWeek = now.getDay(); 
     const diffToSun = -dayOfWeek;
     
     const thisWeekStart = new Date(now);
@@ -575,63 +611,67 @@ function updateScoreStats() {
     thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
     thisWeekEnd.setHours(23,59,59,999);
 
-    // 先週の期間
     const lastWeekStart = new Date(thisWeekStart);
     lastWeekStart.setDate(thisWeekStart.getDate() - 7);
-    
     const lastWeekEnd = new Date(lastWeekStart);
     lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
     lastWeekEnd.setHours(23,59,59,999);
 
-    // 平均計算
     const thisWeekAvg = calculateAverageInrange(thisWeekStart, thisWeekEnd);
     const lastWeekAvg = calculateAverageInrange(lastWeekStart, lastWeekEnd);
 
-    // 表示更新
+    // 今週平均表示
     if (thisWeekAvg !== null) {
-        weeklyAverageDisplay.textContent = thisWeekAvg.toFixed(1);
+        thisWeekAverageDisplay.textContent = thisWeekAvg.toFixed(1);
     } else {
-        weeklyAverageDisplay.textContent = '--';
+        thisWeekAverageDisplay.textContent = '--';
     }
 
+    // 先週比表示
     if (thisWeekAvg !== null && lastWeekAvg !== null) {
         const diff = thisWeekAvg - lastWeekAvg;
         let diffStr = '', diffClass = '';
-
-        if (diff > 0) { diffStr = `+${diff.toFixed(1)}%`; diffClass = 'diff-plus'; }
-        else if (diff < 0) { diffStr = `${diff.toFixed(1)}%`; diffClass = 'diff-minus'; }
-        else { diffStr = `±0%`; diffClass = 'diff-even'; }
+        if (diff > 0) { diffStr = `(先週比 +${diff.toFixed(1)}%)`; diffClass = 'diff-plus'; }
+        else if (diff < 0) { diffStr = `(先週比 ${diff.toFixed(1)}%)`; diffClass = 'diff-minus'; }
+        else { diffStr = `(先週比 ±0%)`; diffClass = 'diff-even'; }
         
-        weeklyDiffDisplay.textContent = diffStr;
-        weeklyDiffDisplay.className = `stat-diff ${diffClass}`;
+        scoreViewWeeklyDiff.textContent = diffStr;
+        scoreViewWeeklyDiff.className = `diff-small ${diffClass}`;
     } else {
-        weeklyDiffDisplay.textContent = '--';
-        weeklyDiffDisplay.className = 'stat-diff';
+        scoreViewWeeklyDiff.textContent = '';
+        scoreViewWeeklyDiff.className = 'diff-small';
     }
 
-    // --- 履歴リスト表示 ---
-    const thisWeekScores = examScores.filter(item => {
-        const d = new Date(item.date);
-        d.setHours(12);
-        return d >= thisWeekStart && d <= thisWeekEnd;
+    // 履歴テーブル（新しい順）
+    scoreHistoryBody.innerHTML = '';
+    const listForDisplay = examScores.map((item, index) => ({ ...item, originalIndex: index })).reverse();
+
+    listForDisplay.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.date}</td>
+            <td style="font-weight:bold; color:#4682b4;">${item.score}%</td>
+            <td><button class="del-score-btn" onclick="askDeleteScore(${item.originalIndex})">削除</button></td>
+        `;
+        scoreHistoryBody.appendChild(tr);
     });
+}
 
-    weeklyHistoryDisplay.innerHTML = '';
+function askDeleteScore(index) {
+    pendingTargetIndex = index;
+    pendingAction = 'deleteScore';
+    modalTitle.textContent = '成績削除';
+    modalMessage.innerHTML = 'この記録を削除しますか？<br>（元に戻せません）';
+    modalConfirmBtn.textContent = '削除';
+    modalConfirmBtn.className = 'modal-btn delete';
+    actionModal.classList.remove('is-hidden');
+}
 
-    if (thisWeekScores.length === 0) {
-        weeklyHistoryDisplay.innerHTML = '<div style="text-align:center; color:#ccc;">記録なし</div>';
-    } else {
-        // 新しい順（降順）
-        const reversedList = [...thisWeekScores].reverse();
-        reversedList.forEach(item => {
-            const row = document.createElement('div');
-            row.className = 'history-item';
-            const dateParts = item.date.split('-'); 
-            const shortDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}`;
-            row.innerHTML = `<span class="history-date">${shortDate}</span><span class="history-score">${item.score}%</span>`;
-            weeklyHistoryDisplay.appendChild(row);
-        });
-    }
+function deleteScore(index) {
+    examScores.splice(index, 1);
+    localStorage.setItem('feExamScores', JSON.stringify(examScores));
+    showToast('成績を削除しました');
+    renderScoreView();
 }
 
 function toggleInventory(h){ const c=h.nextElementSibling; c.classList.toggle('is-closed'); h.querySelector('.toggle-icon').textContent=c.classList.contains('is-closed')?'▲':'▼'; }

@@ -434,3 +434,13 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 
 .history-date { font-size: 10px; color: #888; }
 .history-score { font-weight: bold; color: #333; }
+
+/* --- 成績管理画面の追加スタイル --- */
+.diff-small {
+    font-size: 10px;
+    margin-top: 2px;
+}
+/* 既存の diff-plus などを流用するため、色の再定義は不要ですが念の為 */
+.diff-plus { color: #d32f2f; font-weight: bold; }
+.diff-minus { color: #4169e1; font-weight: bold; }
+.diff-even { color: #666; }

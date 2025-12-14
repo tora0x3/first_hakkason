@@ -12,25 +12,6 @@
 <body>
 
     <div class="left-sidebar">
-        <div class="streak-box stats-box">
-            <h4>過去問平均 (％)</h4>
-            <div class="stat-row">
-                <span>今週:</span>
-                <span id="weeklyAverage" class="stat-value">--</span>
-                <span class="unit">%</span>
-            </div>
-            
-            <div class="history-area">
-                <div id="weeklyHistory" class="history-list">
-                    </div>
-            </div>
-            <div class="stat-row small-stat">
-                <span>先週比:</span>
-                <span id="weeklyDiff" class="stat-diff">--</span>
-            </div>
-            <button class="record-btn" onclick="openScoreModal()">✏️ 記録</button>
-        </div>
-
         <div class="streak-box">
             <h4>連続達成</h4>
             <div class="streak-count-area"><span id="streak-count">0</span> 日</div>
@@ -67,6 +48,7 @@
             <button id="toggleListBtn" class="active-toggle" onclick="toggleDisplayMode('list')">リスト</button>
             <button id="toggleCalendarBtn" onclick="toggleDisplayMode('calendar')">カレンダー</button>
             <button id="toggleWallpaperBtn" onclick="toggleDisplayMode('wallpaper')">壁紙ギャラリー</button>
+            <button id="toggleScoreBtn" onclick="toggleDisplayMode('score')">成績管理</button>
         </div>
 
         <div class="score-box">
@@ -180,6 +162,44 @@
                 クリックして背景に設定できます。
             </p>
             <div id="wallpaperGrid" class="wallpaper-grid"></div>
+        </div>
+    </div>
+
+    <div id="scoreView" class="is-hidden">
+        <div class="section">
+            <h3>過去問成績データ</h3>
+            
+            <div class="score-chart-summary">
+                <div class="summary-item">
+                    <span class="label">今週平均</span>
+                    <span id="thisWeekAverage" class="value">--</span><span class="unit">%</span>
+                    <div id="scoreViewWeeklyDiff" class="diff-small"></div>
+                </div>
+                <div class="summary-item">
+                    <span class="label">全期間平均</span>
+                    <span id="totalAverage" class="value">--</span><span class="unit">%</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="label">最高得点</span>
+                    <span id="maxScore" class="value">--</span><span class="unit">%</span>
+                </div>
+                
+                </div>
+
+            <button class="record-btn-large" onclick="openScoreModal()">＋ 点数を記録する</button>
+
+            <table class="score-history-table">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>点数</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreHistoryBody">
+                    </tbody>
+            </table>
         </div>
     </div>
 
