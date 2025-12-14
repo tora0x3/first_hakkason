@@ -16,6 +16,18 @@ const tagColorInput = document.getElementById('tagColorInput');
 const dailyMemoList = document.getElementById('dailyMemoList');
 const savedTagsList = document.getElementById('savedTagsList');
 
+// 成績関連 (入力モーダル)
+const scoreModal = document.getElementById('scoreModal');
+const scoreInput = document.getElementById('scoreInput');
+
+// 成績関連 (管理画面)
+const scoreView = document.getElementById('scoreView');
+const thisWeekAverageDisplay = document.getElementById('thisWeekAverage');
+const scoreViewWeeklyDiff = document.getElementById('scoreViewWeeklyDiff');
+const totalAverageDisplay = document.getElementById('totalAverage');
+const maxScoreDisplay = document.getElementById('maxScore');
+const scoreHistoryBody = document.getElementById('scoreHistoryBody');
+
 // リスト表示用
 const listElements = {
     daily: document.getElementById('dailyList'),
@@ -35,15 +47,15 @@ const invEls = {
     light: document.getElementById('count-light')
 };
 
-// 画面切り替え用（3つのビュー）
+// 画面切り替え用
 const listView = document.getElementById('listView');
 const calendarView = document.getElementById('calendarView');
 const wallpaperView = document.getElementById('wallpaperView');
-// 画面切り替えボタン
 const toggleBtns = {
     list: document.getElementById('toggleListBtn'),
     calendar: document.getElementById('toggleCalendarBtn'),
-    wallpaper: document.getElementById('toggleWallpaperBtn')
+    wallpaper: document.getElementById('toggleWallpaperBtn'),
+    score: document.getElementById('toggleScoreBtn')
 };
 
 // カレンダー用
@@ -59,29 +71,32 @@ const modalTitle = document.getElementById('modalTitle');
 const modalMessage = document.getElementById('modalMessage');
 const modalConfirmBtn = document.getElementById('modalConfirmBtn');
 
+// 新規: 初期化ボタン
+const resetButton = document.getElementById('resetDataBtn');
+
+// ▼▼▼ グラフインスタンス保持用変数 ▼▼▼
+let scoreChart = null;
+
 /* --- データ定義 --- */
-// CSSからデフォルトのタグ色を取得するヘルパー関数
 function getDefaultTagColor() {
-    // :root に定義された --default-tag-color を取得して空白を除去
     return getComputedStyle(document.documentElement).getPropertyValue('--default-tag-color').trim();
 }
 
-// 壁紙コスト：すべて全素材各1個に統一
 const UNIFIED_COST = { belt: 1, body: 1, bezel: 1, chip: 1, light: 1 };
 const WALLPAPERS = [
     { id: 1, name: '夕暮れ', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsL_UyrMb3RJh09uLU2knr82UmhinzsdvHzw&s', cost: null },
-    { id: 2, name: '敷石の波紋', src: '敷石の波紋.png', cost: UNIFIED_COST },
-    { id: 3, name: '夏夜の花火', src: '夏夜の花火.png', cost: UNIFIED_COST },
-    { id: 4, name: '静寂の青', src: '', cost: UNIFIED_COST },
-    { id: 5, name: '勝利の赤', src: '', cost: UNIFIED_COST },
-    { id: 6, name: '集中モード', src: '', cost: UNIFIED_COST },
-    { id: 7, name: '桜咲く', src: '', cost: UNIFIED_COST },
-    { id: 8, name: 'サイバー', src: '', cost: UNIFIED_COST },
-    { id: 9, name: '和紙の心', src: '', cost: UNIFIED_COST },
-    { id: 10, name: '伝説の絶景', src: 'らいちゅうもどき.png', cost: UNIFIED_COST }
+    { id: 2, name: '敷石の波紋', src: '画像/敷石の波紋.png', cost: UNIFIED_COST },
+    { id: 3, name: '夏夜の花火', src: '画像/夏夜の花火.png', cost: UNIFIED_COST },
+    { id: 4, name: '京の都', src: '画像/京の都.png', cost: UNIFIED_COST },
+    { id: 5, name: '夕焼けと風車小屋', src: '画像/夕焼けと風車小屋.png', cost: UNIFIED_COST },
+    { id: 6, name: '木漏れ日の誘い', src: '画像/木漏れ日の誘い.png', cost: UNIFIED_COST },
+    { id: 7, name: '紅葉を映す額縁', src: '画像/紅葉を映す額縁.png', cost: UNIFIED_COST },
+    { id: 8, name: '青竹の参道', src: '画像/青竹の参道.png', cost: UNIFIED_COST },
+    { id: 9, name: '宵闇に灯る守り火', src: '画像/宵闇に灯る守り火.png', cost: UNIFIED_COST },
+    { id: 10, name: '電光石火', src: '画像/らいちゅうもどき.png', cost: UNIFIED_COST }
 ];
 
-const POINTS = { daily: 10, weekly: 20, normal: 10 };
+const POINTS = { daily: 50, weekly: 100, normal: 30 };
 const ITEM_COSTS = { belt: 100, body: 100, bezel: 100, chip: 100, light: 100 };
 const ITEM_NAMES = { belt: 'ペンキ', body: '筆', bezel: '布', chip: 'キャンバス', light: '設計図' };
 
@@ -95,16 +110,13 @@ let examDateStr = localStorage.getItem('feExamDate') || null;
 let savedTags = JSON.parse(localStorage.getItem('feTags')) || [];
 let unlockedWallpapers = JSON.parse(localStorage.getItem('feUnlockedWallpapers')) || [1];
 let currentWallpaperId = parseInt(localStorage.getItem('feCurrentWallpaper')) || 1;
+let examScores = JSON.parse(localStorage.getItem('feExamScores')) || [];
 
-// メモデータの読み込みと形式変換
 let calendarMemos = JSON.parse(localStorage.getItem('feMemos')) || {};
 for (let key in calendarMemos) {
     if (!Array.isArray(calendarMemos[key])) {
-        if (calendarMemos[key]) {
-            calendarMemos[key] = [calendarMemos[key]];
-        } else {
-            calendarMemos[key] = [];
-        }
+        if (calendarMemos[key]) calendarMemos[key] = [calendarMemos[key]];
+        else calendarMemos[key] = [];
     }
 }
 
@@ -116,6 +128,7 @@ let pendingTargetId = null;
 let pendingTargetType = null;
 let pendingTargetIndex = null;
 let pendingMemoIndex = null;
+
 
 /* --- 初期化・ループ --- */
 function init() {
@@ -130,7 +143,8 @@ function init() {
     applyWallpaper(currentWallpaperId);
     renderWallpaperGrid();
     
-    // 現在のモードに合わせて表示
+    // 初回レンダリング
+    renderScoreView();
     toggleDisplayMode('list'); 
 }
 
@@ -143,12 +157,11 @@ updateTimers();
 /* --- 画面切り替え --- */
 function toggleDisplayMode(mode) {
     displayMode = mode;
-    // 全ボタンのactive解除
     Object.values(toggleBtns).forEach(btn => btn.classList.remove('active-toggle'));
-    // 全ビューを隠す
     listView.classList.add('is-hidden');
     calendarView.classList.add('is-hidden');
     wallpaperView.classList.add('is-hidden');
+    scoreView.classList.add('is-hidden');
 
     if (mode === 'list') {
         listView.classList.remove('is-hidden');
@@ -164,6 +177,10 @@ function toggleDisplayMode(mode) {
         wallpaperView.classList.remove('is-hidden');
         toggleBtns.wallpaper.classList.add('active-toggle');
         renderWallpaperGrid();
+    } else if (mode === 'score') {
+        scoreView.classList.remove('is-hidden');
+        toggleBtns.score.classList.add('active-toggle');
+        renderScoreView();
     }
 }
 
@@ -172,24 +189,14 @@ function renderWallpaperGrid() {
     const grid = document.getElementById('wallpaperGrid');
     if(!grid) return;
     grid.innerHTML = '';
-
     WALLPAPERS.forEach(wp => {
         const isUnlocked = unlockedWallpapers.includes(wp.id);
         const isActive = (currentWallpaperId === wp.id);
-        
         const card = document.createElement('div');
         card.className = `wallpaper-card ${isUnlocked ? '' : 'is-locked'} ${isActive ? 'is-active' : ''}`;
-        
-        let costText = '';
-        if (!isUnlocked && wp.cost) {
-            costText = '素材各1個必要';
-        } else if (isUnlocked) {
-            costText = '解放済み';
-        }
-
-        // 修正: JSによるインラインスタイル指定をCSSクラスへ移動
+        let costText = (!isUnlocked && wp.cost) ? '素材各1個必要' : (isUnlocked ? '解放済み' : '');
         const imgClass = wp.src ? 'wp-image-area' : 'wp-image-area no-image';
-        const imgStyle = wp.src ? `background-image: url('${wp.src}');` : '';
+        const imgStyle = (isUnlocked && wp.src) ? `background-image: url('${wp.src}');` : '';
 
         card.innerHTML = `
             <div class="${imgClass}" style="${imgStyle}"></div>
@@ -205,12 +212,9 @@ function renderWallpaperGrid() {
         grid.appendChild(card);
     });
 }
-
 function askUnlockWallpaper(id) {
     const wp = WALLPAPERS.find(w => w.id === id);
     if (!wp) return;
-    
-    // コストチェック（全素材1個ずつ）
     const missing = [];
     if ((inventory.belt || 0) < 1) missing.push('ペンキ');
     if ((inventory.body || 0) < 1) missing.push('筆');
@@ -234,18 +238,10 @@ function askUnlockWallpaper(id) {
 function executeUnlockWallpaper(id) {
     const wp = WALLPAPERS.find(w => w.id === id);
     if (!wp) return;
-    // 消費
-    inventory.belt -= 1;
-    inventory.body -= 1;
-    inventory.bezel -= 1;
-    inventory.chip -= 1;
-    inventory.light -= 1;
-
+    inventory.belt -= 1; inventory.body -= 1; inventory.bezel -= 1; inventory.chip -= 1; inventory.light -= 1;
     unlockedWallpapers.push(id);
     localStorage.setItem('feUnlockedWallpapers', JSON.stringify(unlockedWallpapers));
-    updateInventoryDisplay();
-    saveData();
-    renderWallpaperGrid();
+    updateInventoryDisplay(); saveData(); renderWallpaperGrid();
     showToast(`「${wp.name}」を解放しました！`);
 }
 
@@ -263,12 +259,11 @@ function applyWallpaper(id) {
         document.body.style.backgroundImage = `url('${wp.src}')`;
     } else {
         document.body.style.backgroundImage = 'none';
-        // JSでの直接指定をやめ、CSSのデフォルト(#f4f4f4)に任せるために空にする
         document.body.style.backgroundColor = ''; 
     }
 }
 
-/* --- その他の機能（タスク・カレンダー等） --- */
+/* --- その他の機能 --- */
 function getTodayString() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
@@ -291,7 +286,6 @@ function toggleTask(id) {
     if (!task) return;
     const today = getTodayString();
     let pt = POINTS[task.type];
-    
     if (!task.isDone && task.type !== 'normal' && selectedDateStr < today) {
         showToast('過去の日付のタスクは完了できません'); return;
     }
@@ -324,7 +318,6 @@ function checkStreakIntegrity() {
     if (streakInfo.count > 0) { streakInfo.count = 0; saveData(); showToast('連続記録がリセットされました'); }
 }
 
-// モーダル
 function askDeleteTask(id) {
     pendingTargetId = id; pendingAction = 'deleteSingle';
     modalTitle.textContent = '確認'; modalMessage.innerHTML = 'タスクを削除しますか？';
@@ -347,9 +340,19 @@ function askBuyItem(itemType) {
     modalConfirmBtn.textContent = '交換'; modalConfirmBtn.className = 'modal-btn buy';
     actionModal.classList.remove('is-hidden');
 }
-function closeModal() { actionModal.classList.add('is-hidden'); pendingAction = null; }
 
-// 修正: switch文に deleteTag を追加
+/**
+ * モーダルを閉じる処理（ボタンの状態リセットを追加）
+ */
+function closeModal() { 
+    actionModal.classList.add('is-hidden'); 
+    pendingAction = null; 
+    
+    // 【重要】他の機能（タスク削除など）でモーダルを使う時に
+    // ボタンが押せないままにならないよう、必ず有効化状態に戻しておく
+    modalConfirmBtn.disabled = false; 
+}
+
 modalConfirmBtn.addEventListener('click', () => {
     switch (pendingAction) {
         case 'deleteSingle': 
@@ -379,11 +382,16 @@ modalConfirmBtn.addEventListener('click', () => {
             renderSavedTags();
             showToast('タグを削除しました');
             break;
+        case 'deleteScore':
+            deleteScore(pendingTargetIndex);
+            break;
+        case 'resetApp': // <-- 追加: 初期化処理の実行
+            executeResetData();
+            break;
     }
     closeModal();
 });
 
-/* --- UI更新 --- */
 function updateInventoryDisplay() {
     invEls.belt.textContent=inventory.belt; invEls.body.textContent=inventory.body; invEls.bezel.textContent=inventory.bezel; invEls.chip.textContent=inventory.chip; invEls.light.textContent=inventory.light;
 }
@@ -420,10 +428,12 @@ function drawOmikuji() {
 }
 
 function changeMonth(d) { currentCalendarDate.setMonth(currentCalendarDate.getMonth()+d); renderCalendarView(); selectedDateInfo.classList.add('is-hidden'); }
+
 function renderCalendarView() {
     const y=currentCalendarDate.getFullYear(), m=currentCalendarDate.getMonth();
     const first=new Date(y,m,1), last=new Date(y,m+1,0);
-    const start=first.getDay()===0?6:first.getDay()-1;
+    const start = first.getDay(); 
+
     currentMonthDisplay.textContent=`${y}年 ${m+1}月`; calendarTableBody.innerHTML='';
     let d=1;
     for(let i=0;i<6;i++){
@@ -434,14 +444,25 @@ function renderCalendarView() {
             if((i===0&&j<start)||d>last.getDate()){ cell.textContent=''; row.appendChild(cell); continue; }
             const ymd=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             cell.innerHTML=`<span class="calendar-day-number ${ymd===getTodayString()?'is-today':''}">${d}</span>`;
-            // メモがあるかチェック
+            
             if(calendarMemos[ymd] && calendarMemos[ymd].length > 0) {
                  const dot=document.createElement('div');
-                 // CSSクラスを使用
                  dot.className = 'dot-memo'; 
                  cell.appendChild(dot);
             }
-            tasks.filter(t=>t.isDone&&t.lastDoneDate===ymd).forEach(t=>{const dot=document.createElement('div');dot.className=`calendar-task-dot dot-${t.type}`;cell.appendChild(dot);});
+            const doneTasksForDay = tasks.filter(t => t.isDone && t.lastDoneDate === ymd);
+            doneTasksForDay.forEach(t => {
+                const dot = document.createElement('div');
+                dot.className = `calendar-task-dot dot-${t.type}`;
+                cell.appendChild(dot);
+            });
+            const doneCount = doneTasksForDay.length;
+            if (doneCount > 0) {
+                if (doneCount >= 5) cell.classList.add('heat-lvl-4');
+                else if (doneCount >= 3) cell.classList.add('heat-lvl-3');
+                else if (doneCount >= 2) cell.classList.add('heat-lvl-2');
+                else cell.classList.add('heat-lvl-1');
+            }
             if(ymd===selectedDateStr) cell.classList.add('selected-day');
             cell.onclick=()=>{ document.querySelectorAll('.selected-day').forEach(e=>e.classList.remove('selected-day')); cell.classList.add('selected-day'); showDateDetails(ymd); };
             row.appendChild(cell); d++;
@@ -449,25 +470,18 @@ function renderCalendarView() {
         calendarTableBody.appendChild(row);
     }
 }
+
 function showDateDetails(date) {
     selectedDateStr=date; selectedDateInfo.classList.remove('is-hidden'); selectedDateTitle.textContent=`${date} の詳細`;
-    
-    // メモ欄の初期化（CSSから取得した値を使用）
     memoInput.value = '';
     tagNameInput.value = '';
     tagColorInput.value = getDefaultTagColor();
-    
-    renderMemoList(date); // リスト表示
-    
+    renderMemoList(date); 
     selectedDateTaskList.innerHTML='';
     const ts = tasks.filter(t=>(t.isDone&&t.lastDoneDate===date) || (!t.isDone&&t.type==='daily') || (!t.isDone&&t.type!=='normal'&&date>=getTodayString()));
-    
-    // 修正: style属性をCSSクラスへ移動
     if(ts.length===0) selectedDateTaskList.innerHTML='<li class="empty-history">履歴なし</li>';
-    
     ts.forEach(t=>{
         const li=document.createElement('li'); li.className='cal-task-item';
-        // 修正: style属性をCSSクラスへ移動
         li.innerHTML=`<span><span class="badge ${t.type}">${getJapaneseType(t.type)}</span> ${t.text}</span> ${t.isDone?'<span class="status-done">済</span>':''}`;
         selectedDateTaskList.appendChild(li);
     });
@@ -476,24 +490,19 @@ function showDateDetails(date) {
 function renderMemoList(d) {
     const memos = calendarMemos[d] || [];
     dailyMemoList.innerHTML = '';
-    
     memos.forEach((m, index) => {
         const item = document.createElement('div');
         item.className = 'memo-list-item';
-        
         let tagHtml = '';
         if(m.tag) {
-            // ※ここはユーザーが指定した任意色のためstyle属性の使用が必要
             tagHtml = `<span class="memo-tag-badge" style="background-color:${m.tag.color}">${m.tag.name}</span>`;
         }
-        
         item.innerHTML = `
             <div class="memo-content">${tagHtml}${m.text || ''}</div>
             <button class="memo-del-btn" onclick="askDeleteMemo(${index})">×</button>
         `;
         dailyMemoList.appendChild(item);
     });
-    
     renderSavedTags();
 }
 
@@ -502,54 +511,31 @@ function addMemo() {
     const txt = memoInput.value;
     const tName = tagNameInput.value.trim();
     const tCol = tagColorInput.value;
-
-    if(!txt && !tName) {
-        showToast('内容を入力してください');
-        return;
-    }
-
+    if(!txt && !tName) { showToast('内容を入力してください'); return; }
     if(tName && !savedTags.some(t=>t.name===tName)){
         savedTags.push({name:tName,color:tCol});
         localStorage.setItem('feTags',JSON.stringify(savedTags));
     }
-
-    if(!calendarMemos[selectedDateStr]) {
-        calendarMemos[selectedDateStr] = [];
-    }
-
-    calendarMemos[selectedDateStr].push({
-        text: txt,
-        tag: tName ? { name: tName, color: tCol } : null
-    });
-
+    if(!calendarMemos[selectedDateStr]) calendarMemos[selectedDateStr] = [];
+    calendarMemos[selectedDateStr].push({ text: txt, tag: tName ? { name: tName, color: tCol } : null });
     localStorage.setItem('feMemos',JSON.stringify(calendarMemos));
     showToast('メモを追加しました');
-    
     memoInput.value = '';
-    
     renderCalendarView();
     renderMemoList(selectedDateStr);
 }
 
 function askDeleteMemo(index) {
-    pendingMemoIndex = index;
-    pendingAction = 'deleteMemo';
-    modalTitle.textContent = 'メモ削除';
-    modalMessage.innerHTML = 'このメモを削除しますか？';
-    modalConfirmBtn.textContent = '削除';
-    modalConfirmBtn.className = 'modal-btn delete';
+    pendingMemoIndex = index; pendingAction = 'deleteMemo';
+    modalTitle.textContent = 'メモ削除'; modalMessage.innerHTML = 'このメモを削除しますか？';
+    modalConfirmBtn.textContent = '削除'; modalConfirmBtn.className = 'modal-btn delete';
     actionModal.classList.remove('is-hidden');
 }
 
 function deleteMemo(index) {
     if(!selectedDateStr || !calendarMemos[selectedDateStr]) return;
-    
     calendarMemos[selectedDateStr].splice(index, 1);
-    
-    if(calendarMemos[selectedDateStr].length === 0) {
-        delete calendarMemos[selectedDateStr];
-    }
-    
+    if(calendarMemos[selectedDateStr].length === 0) delete calendarMemos[selectedDateStr];
     localStorage.setItem('feMemos', JSON.stringify(calendarMemos));
     showToast('メモを削除しました');
     renderCalendarView();
@@ -564,6 +550,7 @@ function renderSavedTags(){
     });
 }
 function askDeleteTag(i){ pendingTargetIndex=i; pendingAction='deleteTag'; modalTitle.textContent='タグ削除'; modalMessage.innerHTML=`タグ「${savedTags[i].name}」を削除しますか？`; modalConfirmBtn.textContent='削除'; modalConfirmBtn.className='modal-btn delete'; actionModal.classList.remove('is-hidden'); }
+
 function openExamModal() { if(examDateStr) examDateInput.value=examDateStr; examModal.classList.remove('is-hidden'); }
 function closeExamModal() { examModal.classList.add('is-hidden'); }
 function saveExamDate() { const v=examDateInput.value; if(!v)localStorage.removeItem('feExamDate'); else localStorage.setItem('feExamDate',v); examDateStr=v; updateExamCountdown(); renderCalendarView(); closeExamModal(); }
@@ -573,6 +560,254 @@ function updateExamCountdown() {
     countdownDays.textContent = diff; countdownDisplay.classList.remove('is-hidden');
     if(diff<0) countdownDisplay.innerHTML="試験終了！お疲れ様でした";
 }
+
+/* --- 成績管理機能 --- */
+function openScoreModal() {
+    scoreInput.value = '';
+    scoreModal.classList.remove('is-hidden');
+    scoreInput.focus();
+}
+
+function closeScoreModal() {
+    scoreModal.classList.add('is-hidden');
+}
+
+function saveScore() {
+    const val = parseFloat(scoreInput.value);
+    if (isNaN(val) || val < 0 || val > 100) {
+        showToast('0〜100の間で入力してください');
+        return;
+    }
+    const today = getTodayString();
+    examScores.push({ date: today, score: val });
+    localStorage.setItem('feExamScores', JSON.stringify(examScores));
+    showToast(`成績 ${val}% を記録しました`);
+    
+    renderScoreView(); // 成績画面を更新
+    closeScoreModal();
+}
+
+// 期間内平均計算ヘルパー
+function calculateAverageInrange(startDate, endDate) {
+    const targets = examScores.filter(item => {
+        const d = new Date(item.date);
+        d.setHours(12);
+        return d >= startDate && d <= endDate;
+    });
+    if (targets.length === 0) return null;
+    const total = targets.reduce((sum, item) => sum + item.score, 0);
+    return total / targets.length;
+}
+
+// 成績管理画面のレンダリング
+function renderScoreView() {
+    // 統計計算
+    if (examScores.length === 0) {
+        thisWeekAverageDisplay.textContent = '--';
+        scoreViewWeeklyDiff.textContent = '';
+        totalAverageDisplay.textContent = '--';
+        maxScoreDisplay.textContent = '--';
+        scoreHistoryBody.innerHTML = '<tr><td colspan="3" style="color:#999; padding:20px;">データがありません</td></tr>';
+        
+        // グラフエリアをクリア
+        if (scoreChart) {
+            scoreChart.destroy();
+            scoreChart = null;
+        }
+        return;
+    }
+
+    // 全期間
+    const total = examScores.reduce((sum, v) => sum + v.score, 0);
+    const avg = total / examScores.length;
+    const max = Math.max(...examScores.map(v => v.score));
+
+    totalAverageDisplay.textContent = avg.toFixed(1);
+    maxScoreDisplay.textContent = max.toFixed(1);
+
+    // 今週・先週の計算
+    const now = new Date();
+    const dayOfWeek = now.getDay(); 
+    const diffToSun = -dayOfWeek;
+    
+    const thisWeekStart = new Date(now);
+    thisWeekStart.setDate(now.getDate() + diffToSun);
+    thisWeekStart.setHours(0,0,0,0);
+    
+    const thisWeekEnd = new Date(thisWeekStart);
+    thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+    thisWeekEnd.setHours(23,59,59,999);
+
+    const lastWeekStart = new Date(thisWeekStart);
+    lastWeekStart.setDate(thisWeekStart.getDate() - 7);
+    const lastWeekEnd = new Date(lastWeekStart);
+    lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+    lastWeekEnd.setHours(23,59,59,999);
+
+    const thisWeekAvg = calculateAverageInrange(thisWeekStart, thisWeekEnd);
+    const lastWeekAvg = calculateAverageInrange(lastWeekStart, lastWeekEnd);
+
+    // 今週平均表示
+    if (thisWeekAvg !== null) {
+        thisWeekAverageDisplay.textContent = thisWeekAvg.toFixed(1);
+    } else {
+        thisWeekAverageDisplay.textContent = '--';
+    }
+
+    // 先週比表示
+    if (thisWeekAvg !== null && lastWeekAvg !== null) {
+        const diff = thisWeekAvg - lastWeekAvg;
+        let diffStr = '', diffClass = '';
+        if (diff > 0) { diffStr = `(先週比 +${diff.toFixed(1)}%)`; diffClass = 'diff-plus'; }
+        else if (diff < 0) { diffStr = `(先週比 ${diff.toFixed(1)}%)`; diffClass = 'diff-minus'; }
+        else { diffStr = `(先週比 ±0%)`; diffClass = 'diff-even'; }
+        
+        scoreViewWeeklyDiff.textContent = diffStr;
+        scoreViewWeeklyDiff.className = `diff-small ${diffClass}`;
+    } else {
+        scoreViewWeeklyDiff.textContent = '';
+        scoreViewWeeklyDiff.className = 'diff-small';
+    }
+
+    // 履歴テーブル（新しい順）
+    scoreHistoryBody.innerHTML = '';
+    const listForDisplay = examScores.map((item, index) => ({ ...item, originalIndex: index })).reverse();
+
+    listForDisplay.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.date}</td>
+            <td style="font-weight:bold; color:#4682b4;">${item.score}%</td>
+            <td><button class="del-score-btn" onclick="askDeleteScore(${item.originalIndex})">削除</button></td>
+        `;
+        scoreHistoryBody.appendChild(tr);
+    });
+
+    // グラフ描画呼び出し
+    renderScoreChart();
+}
+
+// グラフ描画関数 (週ごとに集計)
+function renderScoreChart() {
+    const ctx = document.getElementById('scoreChart');
+    if (!ctx) return;
+
+    // 既存のチャートがあれば破棄
+    if (scoreChart) {
+        scoreChart.destroy();
+    }
+
+    // データ準備 (日付順にソート)
+    const sortedScores = [...examScores].sort((a, b) => a.date.localeCompare(b.date));
+
+    // 週ごとの集計
+    const weeklyGroups = {};
+
+    sortedScores.forEach(item => {
+        // "YYYY-MM-DD" をローカル日付としてパース
+        const parts = item.date.split('-');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const dayDate = parseInt(parts[2]);
+        
+        const d = new Date(year, month, dayDate);
+        
+        // その週の日曜日（開始日）を求める
+        const dayOfWeek = d.getDay(); // 0(Sun) - 6(Sat)
+        const diffToSun = -dayOfWeek;
+        
+        const weekStart = new Date(year, month, dayDate);
+        weekStart.setDate(weekStart.getDate() + diffToSun);
+        
+        // キー作成 (YYYY-MM-DD)
+        const key = `${weekStart.getFullYear()}-${String(weekStart.getMonth()+1).padStart(2,'0')}-${String(weekStart.getDate()).padStart(2,'0')}`;
+        
+        if (!weeklyGroups[key]) {
+            weeklyGroups[key] = { sum: 0, count: 0, labelDate: weekStart };
+        }
+        weeklyGroups[key].sum += item.score;
+        weeklyGroups[key].count += 1;
+    });
+
+    // キーでソート（日付順）
+    const sortedKeys = Object.keys(weeklyGroups).sort();
+
+    const labels = [];
+    const dataPoints = [];
+
+    sortedKeys.forEach(key => {
+        const group = weeklyGroups[key];
+        const avg = group.sum / group.count;
+        
+        // ラベル生成 (例: 12/14週)
+        const m = group.labelDate.getMonth() + 1;
+        const d = group.labelDate.getDate();
+        labels.push(`${m}/${d}週`);
+        
+        dataPoints.push(avg);
+    });
+
+    // チャート生成
+    scoreChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '週平均点',
+                data: dataPoints,
+                borderColor: '#4682b4',
+                backgroundColor: 'rgba(70, 130, 180, 0.1)',
+                borderWidth: 2,
+                pointRadius: 4,
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100, // 100点満点
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `平均: ${context.parsed.y.toFixed(1)}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function askDeleteScore(index) {
+    pendingTargetIndex = index;
+    pendingAction = 'deleteScore';
+    modalTitle.textContent = '成績削除';
+    modalMessage.innerHTML = 'この記録を削除しますか？<br>（元に戻せません）';
+    modalConfirmBtn.textContent = '削除';
+    modalConfirmBtn.className = 'modal-btn delete';
+    actionModal.classList.remove('is-hidden');
+}
+
+function deleteScore(index) {
+    examScores.splice(index, 1);
+    localStorage.setItem('feExamScores', JSON.stringify(examScores));
+    showToast('成績を削除しました');
+    renderScoreView();
+}
+
 function toggleInventory(h){ const c=h.nextElementSibling; c.classList.toggle('is-closed'); h.querySelector('.toggle-icon').textContent=c.classList.contains('is-closed')?'▲':'▼'; }
 function toggleList(id,b){ const l=document.getElementById(id); l.classList.toggle('is-hidden'); b.innerHTML=l.classList.contains('is-hidden')?'▼ 表示':'▼ 隠す'; }
 function showToast(m){ const c=document.getElementById('toastContainer'), t=document.createElement('div'); t.className='toast'; t.textContent=m; c.appendChild(t); requestAnimationFrame(()=>t.classList.add('show')); setTimeout(()=>{t.classList.remove('show'); t.addEventListener('transitionend',()=>t.remove())},3000); }
@@ -587,9 +822,77 @@ function updateTimers() {
     if(w) w.textContent=`(あと${Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate()+(1+7-n.getDay())%7).setHours(24,0,0,0)-n)/86400000)}日)`;
 }
 
-// 初期化実行
-init();
+// --- 新規追加: データ初期化機能 ---
+
+/**
+ * データ初期化の確認モーダルを表示（チェックボックス付き）
+ */
+function askResetData() {
+    pendingAction = 'resetApp';
+    modalTitle.textContent = '⚠ 危険：全データ初期化';
+    
+    // 警告文とチェックボックスをHTMLとして注入
+    modalMessage.innerHTML = `
+        <div class="danger-alert">
+            <p><strong>この操作は取り消せません。</strong></p>
+            <p>これまでのタスク記録、獲得したスコア、解放した壁紙、メモなど、<br>
+            <strong>全てのデータが永久に削除</strong>されます。</p>
+        </div>
+        <label class="checkbox-confirm-area">
+            <input type="checkbox" id="deleteConfirmCheck">
+            上記を理解して初期化する
+        </label>
+    `;
+
+    modalConfirmBtn.textContent = '初期化を実行';
+    modalConfirmBtn.className = 'modal-btn delete dangerous';
+    
+    // 【重要】最初はボタンを無効化(disabled)する
+    modalConfirmBtn.disabled = true;
+
+    // チェックボックスの切り替えイベントを監視
+    // チェックが入った時だけボタンを有効化する
+    const checkBox = document.getElementById('deleteConfirmCheck');
+    checkBox.addEventListener('change', function() {
+        modalConfirmBtn.disabled = !this.checked;
+    });
+
+    actionModal.classList.remove('is-hidden');
+}
+
+/**
+ * データ初期化を実行 (トースト通知を使用)
+ */
+function executeResetData() {
+    // ローカルストレージ内の全データを削除
+    localStorage.clear();
+    
+    // ユーザーに通知 (トースト通知を使用)
+    showToast('全てのアプリケーションデータを削除し、初期化しました。ページをリロードします。');
+    
+    // トースト通知が表示されるのを待ってからリロードするために、少し遅延させる
+    setTimeout(() => {
+        // ページをリロードして初期状態から再開
+        window.location.reload();
+    }, 1000); // 1秒後にリロードを実行
+}
 
 /* --- イベントリスナー --- */
 addBtn.addEventListener('click', addTask);
 input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { addTask(); e.preventDefault(); } });
+
+// 成績入力のEnter対応
+scoreInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        saveScore();
+        e.preventDefault();
+    }
+});
+
+// 新規追加: 初期化ボタンのイベントリスナー
+if (resetButton) {
+    resetButton.addEventListener('click', askResetData);
+}
+
+// 初期化実行
+init();
