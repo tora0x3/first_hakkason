@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -184,9 +185,11 @@
                     <span class="label">最高得点</span>
                     <span id="maxScore" class="value">--</span><span class="unit">%</span>
                 </div>
-                
-                </div>
+            </div>
 
+            <div class="chart-container-box">
+                <canvas id="scoreChart"></canvas>
+            </div>
             <button class="record-btn-large" onclick="openScoreModal()">＋ 点数を記録する</button>
 
             <table class="score-history-table">
@@ -198,7 +201,7 @@
                     </tr>
                 </thead>
                 <tbody id="scoreHistoryBody">
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
