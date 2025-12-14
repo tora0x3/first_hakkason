@@ -22,8 +22,8 @@ const scoreInput = document.getElementById('scoreInput');
 
 // 成績関連 (管理画面)
 const scoreView = document.getElementById('scoreView');
-const thisWeekAverageDisplay = document.getElementById('thisWeekAverage'); // 新規
-const scoreViewWeeklyDiff = document.getElementById('scoreViewWeeklyDiff'); // 新規
+const thisWeekAverageDisplay = document.getElementById('thisWeekAverage');
+const scoreViewWeeklyDiff = document.getElementById('scoreViewWeeklyDiff');
 const totalAverageDisplay = document.getElementById('totalAverage');
 const maxScoreDisplay = document.getElementById('maxScore');
 const scoreHistoryBody = document.getElementById('scoreHistoryBody');
@@ -123,6 +123,9 @@ let pendingTargetType = null;
 let pendingTargetIndex = null;
 let pendingMemoIndex = null;
 
+// ▼▼▼ グラフインスタンス保持用変数 ▼▼▼
+let scoreChart = null;
+
 /* --- 初期化・ループ --- */
 function init() {
     checkResetLogic();
@@ -136,7 +139,7 @@ function init() {
     applyWallpaper(currentWallpaperId);
     renderWallpaperGrid();
     
-    // 初回レンダリング（成績画面の更新も含める）
+    // 初回レンダリング
     renderScoreView();
     toggleDisplayMode('list'); 
 }
@@ -578,7 +581,7 @@ function calculateAverageInrange(startDate, endDate) {
     return total / targets.length;
 }
 
-// 成績管理画面のレンダリング（先週比計算もここで行う）
+// 成績管理画面のレンダリング
 function renderScoreView() {
     // 統計計算
     if (examScores.length === 0) {
@@ -587,6 +590,12 @@ function renderScoreView() {
         totalAverageDisplay.textContent = '--';
         maxScoreDisplay.textContent = '--';
         scoreHistoryBody.innerHTML = '<tr><td colspan="3" style="color:#999; padding:20px;">データがありません</td></tr>';
+        
+        // グラフエリアをクリア
+        if (scoreChart) {
+            scoreChart.destroy();
+            scoreChart = null;
+        }
         return;
     }
 
@@ -655,6 +664,113 @@ function renderScoreView() {
         `;
         scoreHistoryBody.appendChild(tr);
     });
+
+    // グラフ描画呼び出し
+    renderScoreChart();
+}
+
+// グラフ描画関数 (週ごとに集計)
+function renderScoreChart() {
+    const ctx = document.getElementById('scoreChart');
+    if (!ctx) return;
+
+    // 既存のチャートがあれば破棄
+    if (scoreChart) {
+        scoreChart.destroy();
+    }
+
+    // データ準備 (日付順にソート)
+    const sortedScores = [...examScores].sort((a, b) => a.date.localeCompare(b.date));
+
+    // 週ごとの集計
+    const weeklyGroups = {};
+
+    sortedScores.forEach(item => {
+        // "YYYY-MM-DD" をローカル日付としてパース
+        const parts = item.date.split('-');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const dayDate = parseInt(parts[2]);
+        
+        const d = new Date(year, month, dayDate);
+        
+        // その週の日曜日（開始日）を求める
+        const dayOfWeek = d.getDay(); // 0(Sun) - 6(Sat)
+        const diffToSun = -dayOfWeek;
+        
+        const weekStart = new Date(year, month, dayDate);
+        weekStart.setDate(weekStart.getDate() + diffToSun);
+        
+        // キー作成 (YYYY-MM-DD)
+        const key = `${weekStart.getFullYear()}-${String(weekStart.getMonth()+1).padStart(2,'0')}-${String(weekStart.getDate()).padStart(2,'0')}`;
+        
+        if (!weeklyGroups[key]) {
+            weeklyGroups[key] = { sum: 0, count: 0, labelDate: weekStart };
+        }
+        weeklyGroups[key].sum += item.score;
+        weeklyGroups[key].count += 1;
+    });
+
+    // キーでソート（日付順）
+    const sortedKeys = Object.keys(weeklyGroups).sort();
+
+    const labels = [];
+    const dataPoints = [];
+
+    sortedKeys.forEach(key => {
+        const group = weeklyGroups[key];
+        const avg = group.sum / group.count;
+        
+        // ラベル生成 (例: 12/14週)
+        const m = group.labelDate.getMonth() + 1;
+        const d = group.labelDate.getDate();
+        labels.push(`${m}/${d}週`);
+        
+        dataPoints.push(avg);
+    });
+
+    // チャート生成
+    scoreChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '週平均点',
+                data: dataPoints,
+                borderColor: '#4682b4',
+                backgroundColor: 'rgba(70, 130, 180, 0.1)',
+                borderWidth: 2,
+                pointRadius: 4,
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100, // 100点満点
+                    ticks: {
+                        stepSize: 20
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `平均: ${context.parsed.y.toFixed(1)}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 function askDeleteScore(index) {
@@ -691,6 +807,14 @@ function updateTimers() {
 /* --- イベントリスナー --- */
 addBtn.addEventListener('click', addTask);
 input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { addTask(); e.preventDefault(); } });
+
+// 成績入力のEnter対応
+scoreInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        saveScore();
+        e.preventDefault();
+    }
+});
 
 // 初期化実行
 init();
