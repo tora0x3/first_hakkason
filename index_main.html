@@ -60,9 +60,9 @@
     <div class="input-container">
         <div class="input-group">
             <select id="taskType">
-                <option value="daily">デイリー (10pt)</option>
-                <option value="weekly">ウィークリー (20pt)</option>
-                <option value="normal">通常 (10pt)</option>
+                <option value="daily">デイリー (50pt)</option>
+                <option value="weekly">ウィークリー (100pt)</option>
+                <option value="normal">通常 (30pt)</option>
             </select>
             <input type="text" id="taskInput" placeholder="タスクを入力...（例: 過去問10問解く）">
             <button id="addBtn">追加</button>
@@ -121,8 +121,6 @@
             <ul id="normalListCleared" class="task-list cleared-list"></ul>
         </div>
     </div>
-
-    <button id="resetDataBtn">全データ初期化</button>
 
     <div id="calendarView" class="is-hidden">
         <div class="calendar-controls">
@@ -206,6 +204,10 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="footer-area">
+        <button id="resetDataBtn" class="reset-subtle-btn">全データ初期化</button>
     </div>
 
     <div id="toastContainer" class="toast-container"></div>

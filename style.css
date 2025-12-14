@@ -23,13 +23,15 @@ body::before {
 .left-sidebar {
     position: fixed; top: 20px; left: 20px; z-index: 100;
     display: flex; flex-direction: column; gap: 8px; 
-    align-items: flex-start; pointer-events: none;
+    /* align-items: flex-start; */
+    pointer-events: none;
 }
 .left-sidebar > * { pointer-events: auto; }
 .streak-box {
     background-color: rgba(255, 255, 255, 0.95); border: 2px solid #daa520;
     padding: 6px 10px; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     text-align: center; min-width: 70px;
+    width: 100%;
 }
 .streak-box h4 { margin: 0 0 4px 0; border-bottom: 1px solid #daa520; font-size: 12px; color: #b8860b; }
 .streak-count-area { font-size: 16px; font-weight: bold; color: #b22222; }
@@ -38,6 +40,7 @@ body::before {
     border: 2px solid #fff; box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
     padding: 6px 12px; border-radius: 20px; font-size: 12px;
     cursor: pointer; transition: transform 0.2s;
+    width: 100%;
 }
 .omikuji-btn:hover { background-color: #ff1493; transform: scale(1.05); }
 
@@ -351,7 +354,7 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 
 .diff-small { font-size: 10px; margin-top: 2px; }
 
-/* ▼▼▼ 追加: グラフコンテナのスタイル ▼▼▼ */
+/* グラフコンテナのスタイル */
 .chart-container-box {
     background-color: #fff;
     border-radius: 8px;
@@ -363,26 +366,72 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     height: 300px;
     width: 100%;
 }
-/* style.css の末尾に追加してください */
 
-/* --- 既存の成績関連CSS --- */
-.diff-small {
-    font-size: 10px;
-    margin-top: 2px;
+/* --- 全データ削除時の安全装置用スタイル --- */
+
+/* 無効化されたボタンのスタイル */
+.modal-btn:disabled {
+    background-color: #999 !important; /* グレー */
+    color: #eee !important;
+    cursor: not-allowed; /* 禁止マーク */
+    box-shadow: none;
+    transform: none !important;
+    opacity: 0.7;
 }
-.diff-plus { color: #d32f2f; font-weight: bold; }
-.diff-minus { color: #4169e1; font-weight: bold; }
-.diff-even { color: #666; }
 
-/* ▼▼▼ 追加: グラフコンテナのスタイル ▼▼▼ */
-.chart-container-box {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    position: relative;
-    height: 300px;
-    width: 100%;
+/* 警告メッセージの強調 */
+.danger-alert {
+    text-align: left;
+    background-color: #fff5f5;
+    border: 1px solid #ffcccc;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #d32f2f;
+}
+
+/* チェックボックスエリア */
+.checkbox-confirm-area {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+.checkbox-confirm-area input {
+    transform: scale(1.2); /* チェックボックスを少し大きく */
+    cursor: pointer;
+}
+
+/* --- フッターエリア（全データ初期化ボタン配置用） --- */
+.footer-area {
+    margin-top: 60px;          /* 上のコンテンツとの距離 */
+    margin-bottom: 20px;       /* 下の余白 */
+    text-align: center;        /* 中央揃え */
+    padding-top: 20px;
+    border-top: 1px solid #ddd; /* 薄い区切り線 */
+}
+
+/* 初期化ボタンのデザイン調整（赤色で明確に） */
+.reset-subtle-btn {
+    background-color: #b22222; /* 赤色 */
+    color: white;              /* 白文字 */
+    border: none;
+    font-size: 11px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.reset-subtle-btn:hover {
+    background-color: #8b0000; /* ホバー時は濃い赤 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }

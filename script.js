@@ -93,10 +93,11 @@ const WALLPAPERS = [
     { id: 7, name: '紅葉を映す額縁', src: '画像/紅葉を映す額縁.png', cost: UNIFIED_COST },
     { id: 8, name: '青竹の参道', src: '画像/青竹の参道.png', cost: UNIFIED_COST },
     { id: 9, name: '宵闇に灯る守り火', src: '画像/宵闇に灯る守り火.png', cost: UNIFIED_COST },
-    { id: 10, name: '電光石火', src: '画像/らいちゅうもどき.png', cost: UNIFIED_COST }
+    { id: 10, name: '電光石火', src: '画像/らいちゅうもどき.png', cost: UNIFIED_COST },
+    { id: 11, name: '超克', src: '画像/超克.png', cost: UNIFIED_COST }
 ];
 
-const POINTS = { daily: 10, weekly: 20, normal: 10 };
+const POINTS = { daily: 50, weekly: 100, normal: 30 };
 const ITEM_COSTS = { belt: 100, body: 100, bezel: 100, chip: 100, light: 100 };
 const ITEM_NAMES = { belt: 'ペンキ', body: '筆', bezel: '布', chip: 'キャンバス', light: '設計図' };
 
@@ -340,7 +341,18 @@ function askBuyItem(itemType) {
     modalConfirmBtn.textContent = '交換'; modalConfirmBtn.className = 'modal-btn buy';
     actionModal.classList.remove('is-hidden');
 }
-function closeModal() { actionModal.classList.add('is-hidden'); pendingAction = null; }
+
+/**
+ * モーダルを閉じる処理（ボタンの状態リセットを追加）
+ */
+function closeModal() { 
+    actionModal.classList.add('is-hidden'); 
+    pendingAction = null; 
+    
+    // 【重要】他の機能（タスク削除など）でモーダルを使う時に
+    // ボタンが押せないままにならないよう、必ず有効化状態に戻しておく
+    modalConfirmBtn.disabled = false; 
+}
 
 modalConfirmBtn.addEventListener('click', () => {
     switch (pendingAction) {
@@ -548,6 +560,7 @@ function updateExamCountdown() {
     const diff = Math.ceil((new Date(examDateStr).setHours(0,0,0,0) - new Date().setHours(0,0,0,0))/86400000);
     countdownDays.textContent = diff; countdownDisplay.classList.remove('is-hidden');
     if(diff<0) countdownDisplay.innerHTML="試験終了！お疲れ様でした";
+    if(diff===0) countdownDisplay.innerHTML="試験当日！頑張ろう！";
 }
 
 /* --- 成績管理機能 --- */
@@ -814,14 +827,38 @@ function updateTimers() {
 // --- 新規追加: データ初期化機能 ---
 
 /**
- * データ初期化の確認モーダルを表示
+ * データ初期化の確認モーダルを表示（チェックボックス付き）
  */
 function askResetData() {
     pendingAction = 'resetApp';
-    modalTitle.textContent = 'データ初期化の最終確認';
-    modalMessage.innerHTML = '<strong>全てのタスク、スコア、素材、メモなどのデータ</strong>が削除され、初期状態に戻ります。<br>よろしいですか？';
-    modalConfirmBtn.textContent = '全て削除して初期化';
+    modalTitle.textContent = '⚠ 危険：全データ初期化';
+    
+    // 警告文とチェックボックスをHTMLとして注入
+    modalMessage.innerHTML = `
+        <div class="danger-alert">
+            <p><strong>この操作は取り消せません。</strong></p>
+            <p>これまでのタスク記録、獲得したスコア、解放した壁紙、メモなど、<br>
+            <strong>全てのデータが永久に削除</strong>されます。</p>
+        </div>
+        <label class="checkbox-confirm-area">
+            <input type="checkbox" id="deleteConfirmCheck">
+            上記を理解して初期化する
+        </label>
+    `;
+
+    modalConfirmBtn.textContent = '初期化を実行';
     modalConfirmBtn.className = 'modal-btn delete dangerous';
+    
+    // 【重要】最初はボタンを無効化(disabled)する
+    modalConfirmBtn.disabled = true;
+
+    // チェックボックスの切り替えイベントを監視
+    // チェックが入った時だけボタンを有効化する
+    const checkBox = document.getElementById('deleteConfirmCheck');
+    checkBox.addEventListener('change', function() {
+        modalConfirmBtn.disabled = !this.checked;
+    });
+
     actionModal.classList.remove('is-hidden');
 }
 
