@@ -1,6 +1,6 @@
 /* --- 変数定義（色の設定） --- */
 :root {
-    --default-tag-color: #ff6347; /* タグのデフォルト色（トマト色） */
+    --default-tag-color: #ff6347;
 }
 
 /* --- 基本設定 --- */
@@ -9,7 +9,7 @@ body {
     font-family: 'Yuji Syuku', serif;
     max-width: 600px; margin: 0 auto; padding: 20px 20px 100px;
     color: #2d2d2d;
-    background-color: #f4f4f4; /* デフォルト背景色 */
+    background-color: #f4f4f4;
     background-size: cover; background-position: center;
     background-attachment: fixed; min-height: 100vh;
     transition: background-image 0.5s ease;
@@ -60,11 +60,7 @@ body::before {
 .inventory-content.is-closed { max-height: 0; padding-top: 0; border: none; }
 .item-row { font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; color: #333; }
 .item-row > span:first-child { display: flex; align-items: center; gap: 6px; }
-
-/* 素材アイコンのスタイル */
-.item-icon {
-    width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 1px rgba(0,0,0,0.3));
-}
+.item-icon { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 1px rgba(0,0,0,0.3)); }
 
 /* --- ヘッダー・表示切り替え --- */
 .header h2 {
@@ -81,7 +77,6 @@ body::before {
 .display-toggle button.active-toggle {
     background-color: #556b2f; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); font-weight: bold;
 }
-
 .score-box {
     background-color: #b22222; color: white; padding: 8px 16px;
     border-radius: 4px; font-weight: bold; text-align: center;
@@ -142,40 +137,22 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 }
 .wallpaper-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 
-/* 画像エリア：?マークを中央寄せするためにFlexbox化 */
 .wp-image-area { 
-    height: 70px; 
-    background-color: #eee; 
-    background-size: cover; 
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 70px; background-color: #eee; 
+    background-size: cover; background-position: center;
+    display: flex; align-items: center; justify-content: center;
 }
-
-/* 未解放時のスタイル */
 .wallpaper-card.is-locked .wp-image-area { 
-    background-image: none !important;
-    background-color: #ccc;
-    filter: none;
-    opacity: 1;
+    background-image: none !important; background-color: #ccc;
+    filter: none; opacity: 1;
 }
 .wallpaper-card.is-locked .wp-image-area::before {
-    content: "？";
-    font-size: 30px;
-    color: #777;
-    font-weight: bold;
-    font-family: sans-serif;
+    content: "？"; font-size: 30px; color: #777; font-weight: bold; font-family: sans-serif;
 }
 .wallpaper-card.is-locked::after {
-    content: "🔒"; 
-    position: absolute; 
-    top: 0; right: 0; 
-    left: auto; transform: none;
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.6);
-    padding: 2px 4px;
-    border-bottom-left-radius: 4px;
+    content: "🔒"; position: absolute; top: 0; right: 0; 
+    font-size: 12px; background: rgba(255, 255, 255, 0.6);
+    padding: 2px 4px; border-bottom-left-radius: 4px;
 }
 .wallpaper-card.is-active { border: 3px solid #ff4500; }
 .wallpaper-card.is-active::before {
@@ -189,11 +166,7 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .wp-btn { width: 100%; font-size: 10px; border: none; color: white; padding: 3px; border-radius: 3px; }
 .btn-unlock { background-color: #2e8b57; }
 .btn-set { background-color: #4682b4; }
-
-/* 壁紙画像がない場合のデフォルト背景 */
-.wp-image-area.no-image {
-    background-color: #ddd;
-}
+.wp-image-area.no-image { background-color: #ddd; }
 
 /* --- リスト表示 --- */
 .section { 
@@ -238,21 +211,12 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 }
 .calendar-table td:hover { background-color: #f0f8ff; }
 .is-today { color: #b22222; text-decoration: underline; font-weight: bold; }
-
-/* カレンダー内のドット */
 .calendar-task-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 1px; }
 .dot-daily { background-color: #556b2f; }
 .dot-weekly { background-color: #483d8b; }
 .dot-normal { background-color: #696969; }
+.dot-memo { display: inline-block; width: 6px; height: 6px; background-color: #ffa500; border-radius: 50%; margin-left: 2px; }
 
-/* カレンダー内のメモあり表示ドット */
-.dot-memo {
-    display: inline-block; width: 6px; height: 6px;
-    background-color: #ffa500; /* オレンジ */
-    border-radius: 50%; margin-left: 2px;
-}
-
-/* 選択日付詳細 */
 .selected-date-info { border-top: 2px dashed #ccc; padding-top: 10px; animation: fadeIn 0.3s ease; }
 #selectedDateTaskList { list-style: none; padding: 0; }
 #selectedDateTaskList li.cal-task-item {
@@ -273,16 +237,12 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 #tagNameInput { width: 80px; font-size: 12px; padding: 4px; border: 1px solid #ccc; }
 #tagColorInput { width: 30px; height: 26px; border: none; padding: 0; background: none; cursor: pointer; }
 .save-memo-btn { background-color: #4682b4; color: white; font-size: 12px; border: none; padding: 4px 10px; border-radius: 12px; margin-left: auto; }
-
 .saved-tags-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; min-height: 20px; }
 .saved-tag-chip { font-size: 10px; color: white; padding: 2px 6px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 .saved-tag-del { font-weight: bold; cursor: pointer; font-size: 12px; opacity: 0.8; }
 .saved-tag-del:hover { opacity: 1; }
 
-/* 複数メモ表示リスト */
-.memo-list-container {
-    display: flex; flex-direction: column; gap: 6px;
-}
+.memo-list-container { display: flex; flex-direction: column; gap: 6px; }
 .memo-list-item {
     background: #fff; border: 1px solid #ddd; border-left: 4px solid #ccc;
     padding: 6px 8px; border-radius: 3px; font-size: 13px;
@@ -290,16 +250,9 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
     box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
 }
 .memo-content { flex-grow: 1; margin-right: 8px; word-break: break-all; }
-.memo-tag-badge { 
-    display: inline-block; font-size: 10px; color: white; 
-    padding: 1px 5px; border-radius: 3px; margin-right: 5px; vertical-align: middle;
-}
-.memo-del-btn {
-    background: none; border: none; color: #999; font-weight: bold;
-    cursor: pointer; font-size: 14px; padding: 0 4px; line-height: 1;
-}
+.memo-tag-badge { display: inline-block; font-size: 10px; color: white; padding: 1px 5px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+.memo-del-btn { background: none; border: none; color: #999; font-weight: bold; cursor: pointer; font-size: 14px; padding: 0 4px; line-height: 1; }
 .memo-del-btn:hover { color: #d32f2f; }
-
 .history-section h5 { margin: 10px 0 5px 0; font-size: 12px; color: #555; border-bottom: 1px solid #eee; }
 
 /* --- モーダル・トースト --- */
@@ -327,7 +280,6 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .modal-btn.buy { background-color: #1e90ff; }
 .modal-btn.save-exam { background-color: #483d8b; }
 
-/* スマホ対応 */
 @media (max-width: 768px) {
     .left-sidebar { position: static; flex-direction: row; width: 100%; margin-bottom: 10px; justify-content: center; flex-wrap: wrap; }
     .status-container { position: static; flex-direction: row; flex-wrap: wrap; width: 100%; margin-bottom: 15px; justify-content: center;}
@@ -336,13 +288,8 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .is-hidden { display: none !important; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* カレンダー詳細：履歴なしメッセージ */
 .empty-history { color: #777; padding: 5px; list-style: none; }
-
-/* カレンダー詳細：完了済みマーク */
 .status-done { font-size: 10px; color: #d32f2f; font-weight: bold; }
-
-/* ヒートマップ（草）のレベル定義：ふんわり桜色Ver */
 .heat-lvl-1 { background-color: #fff5f7 !important; color: #555 !important; }
 .heat-lvl-2 { background-color: #ffe4e1 !important; color: #555 !important; }
 .heat-lvl-3 { background-color: #ffb6c1 !important; color: #333 !important; }
@@ -350,97 +297,92 @@ button { font-family: 'Yuji Syuku', serif; cursor: pointer; }
 .calendar-table td.selected-day { border: 2px solid #ff8da1 !important; background-color: #fffacd !important; color: #333 !important; }
 
 /* --- 成績パネル --- */
-.stats-box {
-    margin-top: 5px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border: 2px solid #4682b4; /* 青系の枠 */
-}
-
-.stats-box h4 {
-    color: #4682b4;
-    border-bottom: 1px solid #4682b4;
-}
-
-.stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    margin-bottom: 4px;
-    color: #333;
-}
-
+.stats-box { margin-top: 5px; background-color: rgba(255, 255, 255, 0.95); border: 2px solid #4682b4; }
+.stats-box h4 { color: #4682b4; border-bottom: 1px solid #4682b4; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 4px; color: #333; }
 .stat-value { font-size: 18px; font-weight: bold; color: #2d2d2d; }
 .unit { font-size: 10px; margin-left: 2px; }
-
-.small-stat {
-    font-size: 11px;
-    color: #666;
-    border-top: 1px dotted #ccc;
-    padding-top: 2px;
-}
-
-/* 先週比のプラスマイナス色 */
-.diff-plus { color: #d32f2f; font-weight: bold; } /* 上昇（赤） */
-.diff-minus { color: #4169e1; font-weight: bold; } /* 下降（青） */
+.small-stat { font-size: 11px; color: #666; border-top: 1px dotted #ccc; padding-top: 2px; }
+.diff-plus { color: #d32f2f; font-weight: bold; }
+.diff-minus { color: #4169e1; font-weight: bold; }
 .diff-even { color: #666; }
-
-/* 記録ボタン */
 .record-btn {
-    width: 100%;
-    margin-top: 5px;
-    background-color: #fff;
-    border: 1px solid #4682b4;
-    color: #4682b4;
-    font-size: 10px;
-    padding: 2px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
+    width: 100%; margin-top: 5px; background-color: #fff; border: 1px solid #4682b4;
+    color: #4682b4; font-size: 10px; padding: 2px; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s;
 }
-.record-btn:hover {
-    background-color: #4682b4;
-    color: white;
-}
+.record-btn:hover { background-color: #4682b4; color: white; }
 
 /* --- 履歴リストのデザイン --- */
-.history-area {
-    margin: 5px 0;
-    border-top: 1px dashed #ccc; /* 上に区切り線 */
-    border-bottom: 1px dashed #ccc; /* 下に区切り線 */
-    padding: 5px 0;
-}
-
-.history-list {
-    max-height: 80px;      /* 高さが80pxを超えたらスクロール */
-    overflow-y: auto;      /* スクロールバーを表示 */
-    font-size: 11px;
-    text-align: left;
-}
-
-/* スクロールバーを細くする（Chrome/Safari用） */
+.history-area { margin: 5px 0; border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc; padding: 5px 0; }
+.history-list { max-height: 80px; overflow-y: auto; font-size: 11px; text-align: left; }
 .history-list::-webkit-scrollbar { width: 4px; }
 .history-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-
-.history-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 2px 4px;
-    background-color: #f9f9f9;
-    margin-bottom: 2px;
-    border-radius: 2px;
-    color: #555;
-}
-
+.history-item { display: flex; justify-content: space-between; padding: 2px 4px; background-color: #f9f9f9; margin-bottom: 2px; border-radius: 2px; color: #555; }
 .history-date { font-size: 10px; color: #888; }
 .history-score { font-weight: bold; color: #333; }
 
-/* --- 成績管理画面の追加スタイル --- */
+/* --- 成績管理画面のデザイン (新規) --- */
+.score-chart-summary {
+    display: flex; justify-content: space-around;
+    background-color: #fff; padding: 15px; border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+.summary-item { text-align: center; }
+.summary-item .label { display: block; font-size: 11px; color: #777; margin-bottom: 5px; }
+.summary-item .value { font-size: 24px; font-weight: bold; color: #4682b4; }
+.record-btn-large {
+    width: 100%; padding: 12px; background-color: #4682b4;
+    color: white; font-weight: bold; border: none; border-radius: 6px;
+    margin-bottom: 20px; font-size: 16px;
+    box-shadow: 0 4px 0 #315f85; transition: transform 0.1s, box-shadow 0.1s;
+}
+.record-btn-large:active { transform: translateY(2px); box-shadow: 0 2px 0 #315f85; }
+
+.score-history-table {
+    width: 100%; border-collapse: collapse; background-color: #fff;
+    border-radius: 4px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.score-history-table th { background-color: #f0f0f0; color: #555; font-size: 12px; padding: 10px; text-align: center; border-bottom: 2px solid #ddd; }
+.score-history-table td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+.score-history-table td:last-child { width: 60px; }
+.del-score-btn { background-color: #ff6347; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+
+.diff-small { font-size: 10px; margin-top: 2px; }
+
+/* ▼▼▼ 追加: グラフコンテナのスタイル ▼▼▼ */
+.chart-container-box {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+/* style.css の末尾に追加してください */
+
+/* --- 既存の成績関連CSS --- */
 .diff-small {
     font-size: 10px;
     margin-top: 2px;
 }
-/* 既存の diff-plus などを流用するため、色の再定義は不要ですが念の為 */
 .diff-plus { color: #d32f2f; font-weight: bold; }
 .diff-minus { color: #4169e1; font-weight: bold; }
 .diff-even { color: #666; }
+
+/* ▼▼▼ 追加: グラフコンテナのスタイル ▼▼▼ */
+.chart-container-box {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
