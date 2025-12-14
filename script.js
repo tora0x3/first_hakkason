@@ -559,6 +559,7 @@ function updateExamCountdown() {
     const diff = Math.ceil((new Date(examDateStr).setHours(0,0,0,0) - new Date().setHours(0,0,0,0))/86400000);
     countdownDays.textContent = diff; countdownDisplay.classList.remove('is-hidden');
     if(diff<0) countdownDisplay.innerHTML="試験終了！お疲れ様でした";
+    if(diff===0) countdownDisplay.innerHTML="試験当日！頑張ろう！";
 }
 
 /* --- 成績管理機能 --- */
